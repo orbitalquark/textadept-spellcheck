@@ -82,3 +82,19 @@ hunspell: | $(hunspell_zip) ; unzip -d $@ -j $| "*/src/$@/*"
 $(en_US):
 	wget https://cgit.freedesktop.org/libreoffice/dictionaries/plain/en/en_US.aff
 	wget https://cgit.freedesktop.org/libreoffice/dictionaries/plain/en/en_US.dic
+
+# Releases.
+
+ifneq (, $(shell hg summary 2>/dev/null))
+  archive = hg archive -X ".hg*" $(1)
+else
+  archive = git archive HEAD --prefix $(1)/ | tar -xf -
+endif
+
+release: spellcheck | $(hunspell_zip) $(en_US)
+	cp $| $<
+	make -C $< deps && make -C $< -j ta="../../.."
+	zip -r $<.zip $< -x "*.zip" "*.o" "*.def" "*.la" "$</.git*" \
+		"$</hunspell*" && rm -r $<
+spellcheck: ; $(call archive,$@)
+
