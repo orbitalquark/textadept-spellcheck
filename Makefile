@@ -97,4 +97,3 @@ release: spellcheck | $(hunspell_zip) $(en_US)
 	zip -r $<.zip $< -x "*.zip" "*.o" "*.def" "*.la" "$</.git*" \
 		"$</hunspell*" && rm -r $<
 spellcheck: ; $(call archive,$@)
-

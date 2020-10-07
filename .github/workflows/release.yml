@@ -65,7 +65,7 @@ jobs:
           tag: latest
           allowUpdates: true
           body: Latest automated build (ignore github-actions' release date)
-          artifacts: textadept/modules/spellcheck/spellcheck.zip
+          artifacts: spellcheck.zip
           token: ${{ secrets.GITHUB_TOKEN }}
   cleanup:
     runs-on: ubuntu-latest
