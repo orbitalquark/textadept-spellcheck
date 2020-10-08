@@ -130,6 +130,15 @@ Parameters:
 
 * *`word`*: The word to add.
 
+<a id="spellchecker:get_dic_encoding"></a>
+### `spellchecker:get_dic_encoding`()
+
+Returns the dictionary's encoding.
+
+Return:
+
+* string encoding
+
 <a id="spellchecker:spell"></a>
 ### `spellchecker:spell`(*word*)
 

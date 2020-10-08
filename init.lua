@@ -123,9 +123,10 @@ events.connect(events.RESET_BEFORE, function() M.spellchecker = nil end)
 -- Shows suggestions for string *word* at the current position.
 -- @param word The word to show suggestions for.
 local function show_suggestions(word)
-  local suggestions = M.spellchecker:suggest(word)
+  local encoding = M.spellchecker:get_dic_encoding()
+  local suggestions = M.spellchecker:suggest(word:iconv(encoding, 'UTF-8'))
   for i = 1, #suggestions do
-    suggestions[i] = suggestions[i]
+    suggestions[i] = suggestions[i]:iconv('UTF-8', encoding)
   end
   if #suggestions == 0 then
     suggestions[1] = string.format('(%s)', _L['No Suggestions'])
@@ -162,7 +163,8 @@ events.connect(events.USER_LIST_SELECTION, function(id, text, position)
       words[#words + 1] = word
       io.open(user_dict, 'wb'):write(table.concat(words, '\n')):close()
     end
-    M.spellchecker:add_word(word:iconv('UTF-8', buffer.encoding))
+    M.spellchecker:add_word(
+      word:iconv(M.spellchecker:get_dic_encoding(), 'UTF-8'))
     M.check_spelling() -- clear highlighting for all occurrences
   end
 end)
@@ -215,6 +217,7 @@ function M.check_spelling(interactive, wrapped)
   -- marking misspellings.
   local spellcheckable_styles = {} -- cache
   local buffer, style_at = buffer, buffer.style_at
+  local encoding = M.spellchecker:get_dic_encoding()
   local i = (not interactive or wrapped) and 1 or
     buffer:word_start_position(buffer.current_pos, false)
   while i <= buffer.length do
@@ -234,7 +237,7 @@ function M.check_spelling(interactive, wrapped)
       local j = i + 1
       while j <= buffer.length and style_at[j] == style do j = j + 1 end
       for e, s, word in lpeg_gmatch(word_patt, buffer:text_range(i, j)) do
-        if not M.spellchecker:spell(word) then
+        if not M.spellchecker:spell(word:iconv(encoding, 'UTF-8')) then
           buffer:indicator_fill_range(i + s - 1, e - s)
           if interactive then
             buffer:goto_pos(i + s - 1)
@@ -355,6 +358,11 @@ function spellchecker:spell(word) end
 -- @param word The word to get spelling suggestions for.
 -- @return list of suggestions
 function spellchecker:suggest(word) end
+
+---
+-- Returns the dictionary's encoding.
+-- @return string encoding
+function spellchecker:get_dic_encoding() end
 
 ---
 -- Adds string *word* to the spellchecker.

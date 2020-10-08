@@ -32,6 +32,12 @@ static int hs_suggest(lua_State *L) {
   return 1;
 }
 
+/** spellchecker:get_dic_encoding() Lua function. */
+static int hs_get_dic_encoding(lua_State *L) {
+  auto hs = reinterpret_cast<Hunspell *>(luaL_checkudata(L, 1, "ta_spell"));
+  return (lua_pushstring(L, hs->get_dic_encoding()), 1);
+}
+
 /** spellchecker:add_word() Lua function. */
 static int hs_add(lua_State *L) {
   auto hs = reinterpret_cast<Hunspell *>(luaL_checkudata(L, 1, "ta_spell"));
@@ -59,6 +65,7 @@ static const luaL_Reg lib[] = {
   {"add_dic", hs_add_dic},
   {"spell", hs_spell},
   {"suggest", hs_suggest},
+  {"get_dic_encoding", hs_get_dic_encoding},
   {"add_word", hs_add},
   {NULL, NULL}
 };
