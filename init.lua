@@ -237,7 +237,8 @@ function M.check_spelling(interactive, wrapped)
       local j = i + 1
       while j <= buffer.length and style_at[j] == style do j = j + 1 end
       for e, s, word in lpeg_gmatch(word_patt, buffer:text_range(i, j)) do
-        if not M.spellchecker:spell(word:iconv(encoding, 'UTF-8')) then
+        local ok, encoded_word = pcall(string.iconv, word, encoding, 'UTF-8')
+        if not M.spellchecker:spell(ok and encoded_word or word) then
           buffer:indicator_fill_range(i + s - 1, e - s)
           if interactive then
             buffer:goto_pos(i + s - 1)
