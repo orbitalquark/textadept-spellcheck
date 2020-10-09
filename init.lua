@@ -12,6 +12,13 @@ local M = {}
 --
 --     require('spellcheck')
 --
+-- There will be a "Tools > Spelling" menu. Textadept automatically spell checks
+-- the buffer each time it is saved, highlighting any misspelled words in plain
+-- text, comments, and strings. These options can be configured via
+-- [`spellcheck.check_spelling_on_save`]() and
+-- [`spellcheck.spellcheckable_styles`](), respectively. Left-clicking (not
+-- right-clicking) on misspelled words shows suggestions.
+--
 -- By default, Textadept attempts to load a preexisting [Hunspell][] dictionary
 -- for the detected locale. If none exists, or if the locale is not detected,
 -- Textadept falls back on its own prepackaged US English dictionary. Textadept
