@@ -60,6 +60,7 @@ if not rawget(_L, 'Spelling') then
   _L['Check Spelling...'] = '_Check Spelling...'
   _L['Mark Misspelled Words'] = '_Mark Misspelled Words'
   _L['Load Dictionary...'] = '_Load Dictionary...'
+  _L['Select Dictionary'] = 'Select Dictionary'
   _L['Open User Dictionary'] = '_Open User Dictionary'
   -- Other.
   _L['Language not found'] = 'Language not found'
@@ -118,9 +119,9 @@ function M.load(lang)
   ::lang_found::
   if lfs.attributes(user_dicts) then
     for dic in lfs.dir(user_dicts) do
-      if not dic:find('^%.%.?$') then
-        M.spellchecker:add_dic(user_dicts .. (not WIN32 and '/' or '\\') .. dic)
-      end
+      if dic:find('^%.%.?$') then goto continue end
+      M.spellchecker:add_dic(user_dicts .. (not WIN32 and '/' or '\\') .. dic)
+      ::continue::
     end
   end
 end
@@ -306,9 +307,9 @@ for i = 1, #m_tools - 1 do
           for _, path in ipairs(M.hunspell_paths) do
             if not lfs.attributes(path, 'mode') then goto continue end
             for name in lfs.dir(path) do
-              if name:find('%.dic$') then
-                dicts[#dicts + 1] = name:match('(.+)%.dic$')
-              end
+              if not name:find('%.dic$') then goto continue end
+              dicts[#dicts + 1] = name:match('(.+)%.dic$')
+              ::continue::
             end
             ::continue::
           end
