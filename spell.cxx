@@ -53,10 +53,11 @@ static int hs_gc(lua_State *L) {
 
 /** spell() Lua function. */
 static int spell(lua_State *L) {
+  const char *aff_path = luaL_checkstring(L, 1);
+  const char *dic_path = luaL_checkstring(L, 2);
+  const char *key = luaL_optstring(L, 3, NULL);
   new(reinterpret_cast<Hunspell *>(lua_newuserdata(L, sizeof(Hunspell))))
-    Hunspell(
-      luaL_checkstring(L, 1), luaL_checkstring(L, 2),
-      luaL_optstring(L, 3, NULL));
+    Hunspell(aff_path, dic_path, key);
   return (luaL_setmetatable(L, "ta_spell"), 1);
 }
 
