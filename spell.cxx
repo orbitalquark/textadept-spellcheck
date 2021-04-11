@@ -56,12 +56,13 @@ static int spell(lua_State *L) {
   const char *aff_path = luaL_checkstring(L, 1);
   const char *dic_path = luaL_checkstring(L, 2);
   const char *key = luaL_optstring(L, 3, NULL);
-  new(reinterpret_cast<Hunspell *>(lua_newuserdata(L, sizeof(Hunspell))))
+  new (reinterpret_cast<Hunspell *>(lua_newuserdata(L, sizeof(Hunspell))))
     Hunspell(aff_path, dic_path, key);
   return (luaL_setmetatable(L, "ta_spell"), 1);
 }
 
 extern "C" {
+// clang-format off
 static const luaL_Reg lib[] = {
   {"add_dic", hs_add_dic},
   {"spell", hs_spell},
@@ -70,6 +71,7 @@ static const luaL_Reg lib[] = {
   {"add_word", hs_add},
   {NULL, NULL}
 };
+// clang-format on
 
 int luaopen_spell(lua_State *L) {
   if (luaL_newmetatable(L, "ta_spell")) {
@@ -80,10 +82,6 @@ int luaopen_spell(lua_State *L) {
 }
 
 // Platform-specific Lua library entry points.
-LUALIB_API int luaopen_spellcheck_spell(lua_State *L) {
-  return luaopen_spell(L);
-}
-LUALIB_API int luaopen_spellcheck_spellosx(lua_State *L) {
-  return luaopen_spell(L);
-}
+LUALIB_API int luaopen_spellcheck_spell(lua_State *L) { return luaopen_spell(L); }
+LUALIB_API int luaopen_spellcheck_spellosx(lua_State *L) { return luaopen_spell(L); }
 }

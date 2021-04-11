@@ -17,28 +17,25 @@ clean: ; rm -f *.o *.so *.dll
 CROSS_WIN = i686-w64-mingw32-
 CROSS_OSX = x86_64-apple-darwin17-c++ -stdlib=libc++
 
-hunspell_objs = \
-  affentry.o affixmgr.o csutil.o filemgr.o hashmgr.o hunspell.o hunzip.o \
-  phonet.o replist.o suggestmgr.o
+hunspell_objs = affentry.o affixmgr.o csutil.o filemgr.o hashmgr.o hunspell.o hunzip.o phonet.o \
+  replist.o suggestmgr.o
 hunspell_win_objs = $(addsuffix -win.o, $(basename $(hunspell_objs)))
 hunspell_osx_objs = $(addsuffix -osx.o, $(basename $(hunspell_objs)))
 
 spell.so: spell.o $(hunspell_objs)
 	$(CXX) -shared $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 spell.dll: spell-win.o $(hunspell_win_objs) lua.la
-	$(CROSS_WIN)$(CXX) -shared -static-libgcc -static-libstdc++ $(CXXFLAGS) -o \
-		$@ $^ $(LDFLAGS)
+	$(CROSS_WIN)$(CXX) -shared -static-libgcc -static-libstdc++ $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 spell-curses.dll: spell-win.o $(hunspell_win_objs) lua-curses.la
-	$(CROSS_WIN)$(CXX) -shared -static-libgcc -static-libstdc++ $(CXXFLAGS) -o \
-		$@ $^ $(LDFLAGS)
+	$(CROSS_WIN)$(CXX) -shared -static-libgcc -static-libstdc++ $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 spellosx.so: spell-osx.o $(hunspell_osx_objs)
 	$(CROSS_OSX) -shared $(CXXFLAGS) -undefined dynamic_lookup -o $@ $^
 
 spell.o: spell.cxx
 	$(CXX) -c $(CXXFLAGS) -I$(ta_lua) $(hunspell_flags) -o $@ $^
 spell-win.o: spell.cxx
-	$(CROSS_WIN)$(CXX) -c $(CXXFLAGS) -DLUA_BUILD_AS_DLL -DLUA_LIB -I$(ta_lua) \
-		$(hunspell_flags) -o $@ $^
+	$(CROSS_WIN)$(CXX) -c $(CXXFLAGS) -DLUA_BUILD_AS_DLL -DLUA_LIB -I$(ta_lua) $(hunspell_flags) \
+		-o $@ $^
 spell-osx.o: spell.cxx
 	$(CROSS_OSX) -c $(CXXFLAGS) -I$(ta_lua) $(hunspell_flags) -o $@ $^
 
@@ -94,6 +91,5 @@ endif
 release: spellcheck | $(hunspell_zip) $(en_US)
 	cp $| $<
 	make -C $< deps && make -C $< -j ta="../../.."
-	zip -r $<.zip $< -x "*.zip" "*.o" "*.def" "*.la" "$</.git*" \
-		"$</hunspell*" && rm -r $<
+	zip -r $<.zip $< -x "*.zip" "*.o" "*.def" "*.la" "$</.git*" "$</hunspell*" && rm -r $<
 spellcheck: ; $(call archive,$@)

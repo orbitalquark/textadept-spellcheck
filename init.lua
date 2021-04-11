@@ -6,39 +6,36 @@ local M = {}
 ---
 -- Spell checking for Textadept.
 --
--- Install this module by copying it into your *~/.textadept/modules/* directory
--- or Textadept's *modules/* directory, and then putting the following in your
--- *~/.textadept/init.lua*:
+-- Install this module by copying it into your *~/.textadept/modules/* directory or Textadept's
+-- *modules/* directory, and then putting the following in your *~/.textadept/init.lua*:
 --
 --     require('spellcheck')
 --
--- There will be a "Tools > Spelling" menu. Textadept automatically spell checks
--- the buffer each time it is saved, highlighting any misspelled words in plain
--- text, comments, and strings. These options can be configured via
--- [`spellcheck.check_spelling_on_save`]() and
--- [`spellcheck.spellcheckable_styles`](), respectively. Left-clicking (not
--- right-clicking) on misspelled words shows suggestions.
+-- There will be a "Tools > Spelling" menu. Textadept automatically spell checks the buffer
+-- each time it is saved, highlighting any misspelled words in plain text, comments, and
+-- strings. These options can be configured via [`spellcheck.check_spelling_on_save`]() and
+-- [`spellcheck.spellcheckable_styles`](), respectively. Left-clicking (not right-clicking)
+-- on misspelled words shows suggestions.
 --
--- By default, Textadept attempts to load a preexisting [Hunspell][] dictionary
--- for the detected locale. If none exists, or if the locale is not detected,
--- Textadept falls back on its own prepackaged US English dictionary. Textadept
--- searches for dictionaries in [`spellcheck.hunspell_paths`](). User
--- dictionaries are located in the *~/.textadept/dictionaries/* directory, and
--- are loaded automatically.
+-- By default, Textadept attempts to load a preexisting [Hunspell][] dictionary for
+-- the detected locale. If none exists, or if the locale is not detected, Textadept
+-- falls back on its own prepackaged US English dictionary. Textadept searches for
+-- dictionaries in [`spellcheck.hunspell_paths`](). User dictionaries are located in the
+-- *~/.textadept/dictionaries/* directory, and are loaded automatically.
 --
--- Dictionary files are Hunspell dictionaries and follow the Hunspell format:
--- the first line in a dictionary file contains the number of entries contained
--- within, and each subsequent line contains a word.
+-- Dictionary files are Hunspell dictionaries and follow the Hunspell format: the first line
+-- in a dictionary file contains the number of entries contained within, and each subsequent
+-- line contains a word.
 --
 -- [Hunspell]: https://hunspell.github.io/
 --
 -- ### Key Bindings
 --
--- Windows, Linux, BSD|macOS|Terminal|Command
--- -------------------|-----|--------|-------
--- **Tools**          |     |        |
--- F7                 |F7   |F7      |Check spelling interactively
--- Shift+F7           |⇧F7  |S-F7    |Mark misspelled words
+-- Windows, Linux, BSD | macOS | Terminal | Command
+-- -|-|-|-
+-- **Tools**| | |
+-- F7 | F7 | F7 | Check spelling interactively
+-- Shift+F7 | ⇧F7 | S-F7 | Mark misspelled words
 --
 -- @field check_spelling_on_save (bool)
 --   Check spelling after saving files.
@@ -83,16 +80,16 @@ M.spell = require(lib)
 -- @class table
 -- @name hunspell_paths
 M.hunspell_paths = {
-  _USERHOME .. '/modules/spellcheck/', '/usr/local/share/hunspell/',
-  '/usr/share/hunspell/', 'C:\\Program Files (x86)\\hunspell\\',
-  'C:\\Program Files\\hunspell\\', _HOME .. '/modules/spellcheck/'
+  _USERHOME .. '/modules/spellcheck/', '/usr/local/share/hunspell/', '/usr/share/hunspell/',
+  'C:\\Program Files (x86)\\hunspell\\', 'C:\\Program Files\\hunspell\\',
+  _HOME .. '/modules/spellcheck/'
 }
 
 ---
 -- Table of spellcheckable style names.
 -- Text with either of these styles is eligible for spellchecking.
--- The style name keys are assigned non-`nil` values. The default styles are
--- `default`, `comment`, and `string`.
+-- The style name keys are assigned non-`nil` values. The default styles are `default`,
+-- `comment`, and `string`.
 -- @class table
 -- @name spellcheckable_styles
 M.spellcheckable_styles = {default = true, comment = true, string = true}
@@ -133,12 +130,8 @@ events.connect(events.RESET_BEFORE, function() M.spellchecker = nil end)
 local function show_suggestions(word)
   local encoding = M.spellchecker:get_dic_encoding()
   local suggestions = M.spellchecker:suggest(word:iconv(encoding, 'UTF-8'))
-  for i = 1, #suggestions do
-    suggestions[i] = suggestions[i]:iconv('UTF-8', encoding)
-  end
-  if #suggestions == 0 then
-    suggestions[1] = string.format('(%s)', _L['No Suggestions'])
-  end
+  for i = 1, #suggestions do suggestions[i] = suggestions[i]:iconv('UTF-8', encoding) end
+  if #suggestions == 0 then suggestions[1] = string.format('(%s)', _L['No Suggestions']) end
   suggestions[#suggestions + 1] = string.format('(%s)', _L['Add'])
   suggestions[#suggestions + 1] = string.format('(%s)', _L['Ignore'])
   local separator = buffer.auto_c_separator
@@ -146,8 +139,8 @@ local function show_suggestions(word)
   buffer:user_list_show(SPELLING_ID, table.concat(suggestions, '\n'))
   buffer.auto_c_separator = separator
 end
--- Either correct the misspelled word, add it to the user's dictionary, or
--- ignore it (based on the selected item).
+-- Either correct the misspelled word, add it to the user's dictionary, or ignore it (based on
+-- the selected item).
 events.connect(events.USER_LIST_SELECTION, function(id, text, position)
   if id ~= SPELLING_ID then return end
   local s = buffer:indicator_start(M.INDIC_SPELLING, position)
@@ -171,12 +164,12 @@ events.connect(events.USER_LIST_SELECTION, function(id, text, position)
       words[#words + 1] = word
       io.open(user_dict, 'wb'):write(table.concat(words, '\n')):close()
     end
-    M.spellchecker:add_word(
-      word:iconv(M.spellchecker:get_dic_encoding(), 'UTF-8'))
+    M.spellchecker:add_word(word:iconv(M.spellchecker:get_dic_encoding(), 'UTF-8'))
     M.check_spelling() -- clear highlighting for all occurrences
   end
 end)
 
+-- LuaFormatter off
 -- LPeg grammar that matches spellcheckable words.
 local word_patt = {
   lpeg.Cp() * lpeg.C(lpeg.V('word')) * lpeg.Cp() + lpeg.V('skip') * lpeg.V(1),
@@ -187,8 +180,9 @@ local word_patt = {
   word = lpeg.V('word_part') * (lpeg.S("-'") * lpeg.V('word_part'))^-1 *
     -(lpeg.V('word_char') + lpeg.S("-'.") * lpeg.V('word_char')),
   skip = lpeg.V('word_char')^1 * (lpeg.S("-'.") * lpeg.V('word_char')^1)^0 +
-    (1 - lpeg.V('word_char'))^1,
+    (1 - lpeg.V('word_char'))^1
 }
+-- LuaFormatter on
 
 -- Returns a generator that acts like string.gmatch, but for LPeg patterns.
 -- @param pattern LPeg pattern.
@@ -201,18 +195,17 @@ local function lpeg_gmatch(pattern, subject)
 end
 
 ---
--- Checks the buffer for spelling errors, marks misspelled words, and optionally
--- shows suggestions for the next misspelled word if *interactive* is `true`.
--- @param interactive Flag indicating whether or not to display suggestions for
---   the next misspelled word. The default value is `false`.
--- @param wrapped Utility flag indicating whether or not the spellchecker has
---   wrapped for displaying useful statusbar information. This flag is used and
---   set internally, and should not be set otherwise.
+-- Checks the buffer for spelling errors, marks misspelled words, and optionally shows suggestions
+-- for the next misspelled word if *interactive* is `true`.
+-- @param interactive Flag indicating whether or not to display suggestions for the next
+--   misspelled word. The default value is `false`.
+-- @param wrapped Utility flag indicating whether or not the spellchecker has wrapped for
+--   displaying useful statusbar information. This flag is used and set internally, and should
+--   not be set otherwise.
 -- @name check_spelling
 function M.check_spelling(interactive, wrapped)
   -- Show suggestions for the misspelled word under the caret if necessary.
-  if interactive and buffer:indicator_all_on_for(buffer.current_pos) &
-     1 << M.INDIC_SPELLING - 1 > 0 then
+  if interactive and buffer:indicator_all_on_for(buffer.current_pos) & 1 << M.INDIC_SPELLING - 1 > 0 then
     local s = buffer:indicator_start(M.INDIC_SPELLING, buffer.current_pos)
     local e = buffer:indicator_end(M.INDIC_SPELLING, buffer.current_pos)
     show_suggestions(buffer:text_range(s, e))
@@ -221,16 +214,15 @@ function M.check_spelling(interactive, wrapped)
   -- Clear existing spellcheck indicators.
   buffer.indicator_current = M.INDIC_SPELLING
   if not interactive then buffer:indicator_clear_range(1, buffer.length) end
-  -- Iterate over spellcheckable text ranges, checking words in them, and
-  -- marking misspellings.
+  -- Iterate over spellcheckable text ranges, checking words in them, and marking misspellings.
   local spellcheckable_styles = {} -- cache
   local buffer, style_at = buffer, buffer.style_at
   local encoding = M.spellchecker:get_dic_encoding()
   local i = (not interactive or wrapped) and 1 or
     buffer:word_start_position(buffer.current_pos, false)
   while i <= buffer.length do
-    -- Ensure at least the next page of text is styled since spellcheckable
-    -- ranges depend on accurate styling.
+    -- Ensure at least the next page of text is styled since spellcheckable ranges depend on
+    -- accurate styling.
     if i > buffer.end_styled then
       local next_page = buffer:line_from_position(i) + view.lines_on_screen
       buffer:colorize(buffer.end_styled, buffer.line_end_position[next_page])
@@ -261,14 +253,16 @@ function M.check_spelling(interactive, wrapped)
     end
   end
   if interactive then
-    if not wrapped then M.check_spelling(true, true) return end -- wrap
+    if not wrapped then
+      M.check_spelling(true, true) -- wrap
+      return
+    end
     ui.statusbar_text = _L['No misspelled words.']
   end
 end
 -- Check spelling upon saving files.
-events.connect(events.FILE_AFTER_SAVE, function()
-  if M.check_spelling_on_save then M.check_spelling() end
-end)
+events.connect(events.FILE_AFTER_SAVE,
+  function() if M.check_spelling_on_save then M.check_spelling() end end)
 -- Show spelling suggestions when clicking on misspelled words.
 events.connect(events.INDICATOR_CLICK, function(position)
   if buffer:indicator_all_on_for(position) & 1 << M.INDIC_SPELLING - 1 > 0 then
@@ -279,8 +273,7 @@ end)
 
 -- Set up indicators, add a menu, and configure key bindings.
 local function set_properties()
-  view.indic_style[M.INDIC_SPELLING] = not CURSES and view.INDIC_DIAGONAL or
-    view.INDIC_STRAIGHTBOX
+  view.indic_style[M.INDIC_SPELLING] = not CURSES and view.INDIC_DIAGONAL or view.INDIC_STRAIGHTBOX
   view.indic_fore[M.INDIC_SPELLING] = view.property_int['color.red']
 end
 events.connect(events.VIEW_NEW, set_properties)
@@ -297,6 +290,7 @@ for i = 1, #m_tools - 1 do
   elseif found_area then
     local label = m_tools[i].title or m_tools[i][1]
     if 'Spelling' < label:gsub('^_', '') or m_tools[i][1] == '' then
+      -- LuaFormatter off
       table.insert(m_tools, i, {
         title = _L['Spelling'],
         {_L['Check Spelling...'], function() M.check_spelling(true) end},
@@ -324,6 +318,7 @@ for i = 1, #m_tools - 1 do
           io.open_file(user_dicts .. (not WIN32 and '/' or '\\') .. 'user.dic')
         end}
       })
+      -- LuaFormatter on
       break
     end
   end
@@ -336,16 +331,14 @@ return M
 --[[ The functions below are Lua C functions.
 
 ---
--- Returns a Hunspell spellchecker that utilizes affix file path *aff* and
--- dictionary file path *dic*.
--- This is a low-level function. You probably want to use the higher-level
--- `spellcheck.load()`.
+-- Returns a Hunspell spellchecker that utilizes affix file path *aff* and dictionary file
+-- path *dic*.
+-- This is a low-level function. You probably want to use the higher-level `spellcheck.load()`.
 -- @param aff Path to the Hunspell affix file to use.
 -- @param dic Path to the Hunspell dictionary file to use.
 -- @param key Optional string key for encrypted *dic*.
 -- @return spellchecker
--- @usage spellchecker = spell('/usr/share/hunspell/en_US.aff',
---   '/usr/share/hunspell/en_US.dic')
+-- @usage spellchecker = spell('/usr/share/hunspell/en_US.aff', '/usr/share/hunspell/en_US.dic')
 -- @usage spellchecker:spell('foo') --> false
 -- @see load
 function _G.spell(aff, dic, key) end
@@ -375,8 +368,8 @@ function spellchecker:get_dic_encoding() end
 
 ---
 -- Adds string *word* to the spellchecker.
--- Note: this is not a permanent addition. It only persists for the life of
--- this spellchecker and applies only to this spellchecker.
+-- Note: this is not a permanent addition. It only persists for the life of this spellchecker
+-- and applies only to this spellchecker.
 -- @param word The word to add.
 function spellchecker:add_word(word) end
 ]]

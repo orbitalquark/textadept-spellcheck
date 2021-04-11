@@ -2,39 +2,36 @@
 
 Spell checking for Textadept.
 
-Install this module by copying it into your *~/.textadept/modules/* directory
-or Textadept's *modules/* directory, and then putting the following in your
-*~/.textadept/init.lua*:
+Install this module by copying it into your *~/.textadept/modules/* directory or Textadept's
+*modules/* directory, and then putting the following in your *~/.textadept/init.lua*:
 
     require('spellcheck')
 
-There will be a "Tools > Spelling" menu. Textadept automatically spell checks
-the buffer each time it is saved, highlighting any misspelled words in plain
-text, comments, and strings. These options can be configured via
-[`spellcheck.check_spelling_on_save`](#spellcheck.check_spelling_on_save) and
-[`spellcheck.spellcheckable_styles`](#spellcheck.spellcheckable_styles), respectively. Left-clicking (not
-right-clicking) on misspelled words shows suggestions.
+There will be a "Tools > Spelling" menu. Textadept automatically spell checks the buffer
+each time it is saved, highlighting any misspelled words in plain text, comments, and
+strings. These options can be configured via [`spellcheck.check_spelling_on_save`](#spellcheck.check_spelling_on_save) and
+[`spellcheck.spellcheckable_styles`](#spellcheck.spellcheckable_styles), respectively. Left-clicking (not right-clicking)
+on misspelled words shows suggestions.
 
-By default, Textadept attempts to load a preexisting [Hunspell][] dictionary
-for the detected locale. If none exists, or if the locale is not detected,
-Textadept falls back on its own prepackaged US English dictionary. Textadept
-searches for dictionaries in [`spellcheck.hunspell_paths`](#spellcheck.hunspell_paths). User
-dictionaries are located in the *~/.textadept/dictionaries/* directory, and
-are loaded automatically.
+By default, Textadept attempts to load a preexisting [Hunspell][] dictionary for
+the detected locale. If none exists, or if the locale is not detected, Textadept
+falls back on its own prepackaged US English dictionary. Textadept searches for
+dictionaries in [`spellcheck.hunspell_paths`](#spellcheck.hunspell_paths). User dictionaries are located in the
+*~/.textadept/dictionaries/* directory, and are loaded automatically.
 
-Dictionary files are Hunspell dictionaries and follow the Hunspell format:
-the first line in a dictionary file contains the number of entries contained
-within, and each subsequent line contains a word.
+Dictionary files are Hunspell dictionaries and follow the Hunspell format: the first line
+in a dictionary file contains the number of entries contained within, and each subsequent
+line contains a word.
 
 [Hunspell]: https://hunspell.github.io/
 
 ## Key Bindings
 
-Windows, Linux, BSD|macOS|Terminal|Command
--------------------|-----|--------|-------
-**Tools**          |     |        |
-F7                 |F7   |F7      |Check spelling interactively
-Shift+F7           |⇧F7  |S-F7    |Mark misspelled words
+Windows, Linux, BSD | macOS | Terminal | Command
+-|-|-|-
+**Tools**| | |
+F7 | F7 | F7 | Check spelling interactively
+Shift+F7 | ⇧F7 | S-F7 | Mark misspelled words
 
 
 ## Fields defined by `spellcheck`
@@ -61,10 +58,9 @@ The Hunspell spellchecker object.
 <a id="_G.spell"></a>
 ### `_G.spell`(*aff, dic, key*)
 
-Returns a Hunspell spellchecker that utilizes affix file path *aff* and
-dictionary file path *dic*.
-This is a low-level function. You probably want to use the higher-level
-`spellcheck.load()`.
+Returns a Hunspell spellchecker that utilizes affix file path *aff* and dictionary file
+path *dic*.
+This is a low-level function. You probably want to use the higher-level `spellcheck.load()`.
 
 Parameters:
 
@@ -74,8 +70,7 @@ Parameters:
 
 Usage:
 
-* `spellchecker = spell('/usr/share/hunspell/en_US.aff',
-  '/usr/share/hunspell/en_US.dic')`
+* `spellchecker = spell('/usr/share/hunspell/en_US.aff', '/usr/share/hunspell/en_US.dic')`
 * `spellchecker:spell('foo') --> false`
 
 Return:
@@ -89,16 +84,16 @@ See also:
 <a id="spellcheck.check_spelling"></a>
 ### `spellcheck.check_spelling`(*interactive, wrapped*)
 
-Checks the buffer for spelling errors, marks misspelled words, and optionally
-shows suggestions for the next misspelled word if *interactive* is `true`.
+Checks the buffer for spelling errors, marks misspelled words, and optionally shows suggestions
+for the next misspelled word if *interactive* is `true`.
 
 Parameters:
 
-* *`interactive`*: Flag indicating whether or not to display suggestions for
-  the next misspelled word. The default value is `false`.
-* *`wrapped`*: Utility flag indicating whether or not the spellchecker has
-  wrapped for displaying useful statusbar information. This flag is used and
-  set internally, and should not be set otherwise.
+* *`interactive`*: Flag indicating whether or not to display suggestions for the next
+  misspelled word. The default value is `false`.
+* *`wrapped`*: Utility flag indicating whether or not the spellchecker has wrapped for
+  displaying useful statusbar information. This flag is used and set internally, and should
+  not be set otherwise.
 
 <a id="spellcheck.load"></a>
 ### `spellcheck.load`(*lang*)
@@ -130,8 +125,8 @@ Parameters:
 ### `spellchecker:add_word`(*word*)
 
 Adds string *word* to the spellchecker.
-Note: this is not a permanent addition. It only persists for the life of
-this spellchecker and applies only to this spellchecker.
+Note: this is not a permanent addition. It only persists for the life of this spellchecker
+and applies only to this spellchecker.
 
 Parameters:
 
@@ -186,7 +181,7 @@ Paths to search for Hunspell dictionaries in.
 
 Table of spellcheckable style names.
 Text with either of these styles is eligible for spellchecking.
-The style name keys are assigned non-`nil` values. The default styles are
-`default`, `comment`, and `string`.
+The style name keys are assigned non-`nil` values. The default styles are `default`,
+`comment`, and `string`.
 
 ---
