@@ -307,7 +307,8 @@ for i = 1, #m_tools - 1 do
             end
             ::continue::
           end
-          local button, i = ui.dialogs.filteredlist{
+          local button
+          button, i = ui.dialogs.filteredlist{
             title = _L['Select Dictionary'], columns = _L['Name'], items = dicts
           }
           if button == 1 and i then M.load(dicts[i]) end
