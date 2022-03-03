@@ -14,7 +14,8 @@ clean: ; rm -f *.o *.so *.dll
 
 # Platform objects.
 
-CROSS_WIN = i686-w64-mingw32-
+CROSS_WIN = x86_64-w64-mingw32-g++-posix
+DLLTOOL = x86_64-w64-mingw32-dlltool
 CROSS_OSX = x86_64-apple-darwin17-c++ -stdlib=libc++
 
 hunspell_objs = affentry.o affixmgr.o csutil.o filemgr.o hashmgr.o hunspell.o hunzip.o phonet.o \
@@ -22,38 +23,35 @@ hunspell_objs = affentry.o affixmgr.o csutil.o filemgr.o hashmgr.o hunspell.o hu
 hunspell_win_objs = $(addsuffix -win.o, $(basename $(hunspell_objs)))
 hunspell_osx_objs = $(addsuffix -osx.o, $(basename $(hunspell_objs)))
 
-spell.so: spell.o $(hunspell_objs)
-	$(CXX) -shared $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
+spell.so: spell.o $(hunspell_objs) ; $(CXX) -shared $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 spell.dll: spell-win.o $(hunspell_win_objs) lua.la
-	$(CROSS_WIN)$(CXX) -shared -static-libgcc -static-libstdc++ $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
+	$(CROSS_WIN) -shared -static-libgcc -static-libstdc++ $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 spell-curses.dll: spell-win.o $(hunspell_win_objs) lua-curses.la
-	$(CROSS_WIN)$(CXX) -shared -static-libgcc -static-libstdc++ $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
+	$(CROSS_WIN) -shared -static-libgcc -static-libstdc++ $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 spellosx.so: spell-osx.o $(hunspell_osx_objs)
 	$(CROSS_OSX) -shared $(CXXFLAGS) -undefined dynamic_lookup -o $@ $^
 
 spell.o: spell.cxx
 	$(CXX) -c $(CXXFLAGS) -I$(ta_lua) $(hunspell_flags) -o $@ $^
 spell-win.o: spell.cxx
-	$(CROSS_WIN)$(CXX) -c $(CXXFLAGS) -DLUA_BUILD_AS_DLL -DLUA_LIB -I$(ta_lua) $(hunspell_flags) \
-		-o $@ $^
-spell-osx.o: spell.cxx
-	$(CROSS_OSX) -c $(CXXFLAGS) -I$(ta_lua) $(hunspell_flags) -o $@ $^
+	$(CROSS_WIN) -c $(CXXFLAGS) -DLUA_BUILD_AS_DLL -DLUA_LIB -I$(ta_lua) $(hunspell_flags) -o $@ $^
+spell-osx.o: spell.cxx ; $(CROSS_OSX) -c $(CXXFLAGS) -I$(ta_lua) $(hunspell_flags) -o $@ $^
 
 $(hunspell_objs): %.o: hunspell/%.cxx
 	$(CXX) -c $(CXXFLAGS) $(hunspell_flags) $< -o $@
 $(hunspell_win_objs): %-win.o: hunspell/%.cxx
-	$(CROSS_WIN)$(CXX) -c $(CXXFLAGS) $(hunspell_flags) $< -o $@
+	$(CROSS_WIN) -c $(CXXFLAGS) $(hunspell_flags) $< -o $@
 $(hunspell_osx_objs): %-osx.o: hunspell/%.cxx
 	$(CROSS_OSX) -c $(CXXFLAGS) $(hunspell_flags) $< -o $@
 
-lua.def:
+lua.def: $(ta_src)/lua.sym
 	echo LIBRARY \"textadept.exe\" > $@ && echo EXPORTS >> $@
-	grep -v "^#" $(ta_src)/lua.sym >> $@
-lua.la: lua.def ; $(CROSS_WIN)dlltool -d $< -l $@
+	grep -v "^#" $< >> $@
+lua.la: lua.def ; $(DLLTOOL) -d $< -l $@
 lua-curses.def:
 	echo LIBRARY \"textadept-curses.exe\" > $@ && echo EXPORTS >> $@
 	grep -v "^#" $(ta_src)/lua.sym >> $@
-lua-curses.la: lua-curses.def ; $(CROSS_WIN)dlltool -d $< -l $@
+lua-curses.la: lua-curses.def ; $(DLLTOOL) -d $< -l $@
 
 # Documentation.
 
