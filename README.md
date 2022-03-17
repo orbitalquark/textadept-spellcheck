@@ -27,10 +27,10 @@ line contains a word.
 
 ## Compiling
 
-Releases include binaries, so building this modules should not be necessary. If you want to
-build manually, run `make deps` followed by `make`. This assumes the module is installed
-in Textadept's *modules/* directory. If it is not (e.g. it is in your `_USERHOME`), run
-`make ta=/path/to/textadept`.
+Releases include binaries, so building this modules should not be necessary. If you want
+to build manually, run `make deps` followed by `make spell.so`. This assumes the module is
+installed in Textadept's *modules/* directory. If it is not (e.g. it is in your `_USERHOME`),
+run `make ta=/path/to/textadept spell.so`.
 
 ## Key Bindings
 
