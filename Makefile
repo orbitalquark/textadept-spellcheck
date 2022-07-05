@@ -7,6 +7,7 @@ ta_lua = $(ta_src)/lua/src
 CXX = g++
 CXXFLAGS = -std=c++11 -pedantic -fPIC -Wall
 LDFLAGS = -Wl,--retain-symbols-file -Wl,$(ta_src)/lua.sym
+WGET = wget -O $@
 hunspell_flags = -DHUNSPELL_STATIC -Ihunspell
 
 all: spell.so spell.dll spell-curses.dll spellosx.so
@@ -72,11 +73,11 @@ en_US = en_US.aff en_US.dic
 deps: hunspell $(en_US)
 
 hunspell_zip = v1.7.0.zip
-$(hunspell_zip): ; wget https://github.com/hunspell/hunspell/archive/$@
+$(hunspell_zip): ; $(WGET) https://github.com/hunspell/hunspell/archive/$@
 hunspell: | $(hunspell_zip) ; unzip -d $@ -j $| "*/src/$@/*"
 $(en_US):
-	wget https://cgit.freedesktop.org/libreoffice/dictionaries/plain/en/en_US.aff
-	wget https://cgit.freedesktop.org/libreoffice/dictionaries/plain/en/en_US.dic
+	$(WGET) https://cgit.freedesktop.org/libreoffice/dictionaries/plain/en/en_US.aff
+	$(WGET) https://cgit.freedesktop.org/libreoffice/dictionaries/plain/en/en_US.dic
 
 # Releases.
 
