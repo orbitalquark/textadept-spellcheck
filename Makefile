@@ -75,9 +75,8 @@ deps: hunspell $(en_US)
 hunspell_zip = v1.7.0.zip
 $(hunspell_zip): ; $(WGET) https://github.com/hunspell/hunspell/archive/$@
 hunspell: | $(hunspell_zip) ; unzip -d $@ -j $| "*/src/$@/*"
-$(en_US):
-	$(WGET) https://cgit.freedesktop.org/libreoffice/dictionaries/plain/en/en_US.aff
-	$(WGET) https://cgit.freedesktop.org/libreoffice/dictionaries/plain/en/en_US.dic
+en_US.aff: ; $(WGET) https://cgit.freedesktop.org/libreoffice/dictionaries/plain/en/en_US.aff
+en_US.dic: ; $(WGET) https://cgit.freedesktop.org/libreoffice/dictionaries/plain/en/en_US.dic
 
 # Releases.
 
