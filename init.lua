@@ -279,12 +279,10 @@ events.connect(events.INDICATOR_CLICK, function(position)
 end)
 
 -- Set up indicators, add a menu, and configure key bindings.
-local function set_properties()
+events.connect(events.VIEW_NEW, function()
   view.indic_style[M.INDIC_SPELLING] = not CURSES and view.INDIC_DIAGONAL or view.INDIC_STRAIGHTBOX
-  view.indic_fore[M.INDIC_SPELLING] = view.property_int['color.red']
-end
-events.connect(events.VIEW_NEW, set_properties)
-events.connect(events.BUFFER_NEW, set_properties)
+  view.indic_fore[M.INDIC_SPELLING] = view.colors.red
+end)
 
 -- Add menu entries and configure key bindings.
 -- (Insert 'Spelling' menu in alphabetical order.)
