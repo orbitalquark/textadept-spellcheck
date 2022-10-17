@@ -38,7 +38,7 @@ local M = {}
 --
 -- ### Key Bindings
 --
--- Windows, Linux, BSD | macOS | Terminal | Command
+-- Windows and Linux | macOS | Terminal | Command
 -- -|-|-|-
 -- **Tools**| | |
 -- F7 | F7 | F7 | Check spelling interactively
@@ -313,10 +313,8 @@ for i = 1, #m_tools - 1 do
             ::continue::
           end
           local button
-          button, i = ui.dialogs.filteredlist{
-            title = _L['Select Dictionary'], columns = _L['Name'], items = dicts
-          }
-          if button == 1 and i then M.load(dicts[i]) end
+          i = ui.dialogs.list{title = _L['Select Dictionary'], items = dicts}
+          if i then M.load(dicts[i]) end
         end},
         SEP,
         {_L['Open User Dictionary'], function()

@@ -34,7 +34,7 @@ run `make ta=/path/to/textadept spell.so`.
 
 ## Key Bindings
 
-Windows, Linux, BSD | macOS | Terminal | Command
+Windows and Linux | macOS | Terminal | Command
 -|-|-|-
 **Tools**| | |
 F7 | F7 | F7 | Check spelling interactively
