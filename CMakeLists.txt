@@ -61,7 +61,6 @@ if(NOT (WIN32 OR APPLE))
 elseif(APPLE)
   install(CODE "file(RENAME ${src}/libspell.dylib ${src}/spellosx.so)")
 endif()
-install(FILES en_US.aff en_US.dic DESTINATION ${src})
 
 # Documentation.
 get_filename_component(ta_dir ${src}/../../ ABSOLUTE)

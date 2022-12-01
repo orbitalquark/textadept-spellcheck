@@ -44,8 +44,9 @@ jobs:
       - name: Package
         shell: bash
         run: |
+          cmake -S . -B build # fetch en_US.aff and en_US.dic
           git archive HEAD --prefix spellcheck/ | tar -xf -
-          mv *.so *.dll spellcheck
+          mv *.so *.dll *.aff *.dic spellcheck
           zip -r spellcheck.zip spellcheck
       - name: Tag
         run: |
