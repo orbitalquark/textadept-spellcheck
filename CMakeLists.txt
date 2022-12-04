@@ -61,6 +61,12 @@ if(NOT (WIN32 OR APPLE))
 elseif(APPLE)
   install(CODE "file(RENAME ${src}/libspell.dylib ${src}/spellosx.so)")
 endif()
+if(NOT (WIN32 OR APPLE))
+  include(GNUInstallDirs)
+  set(module_dir ${CMAKE_INSTALL_FULL_DATADIR}/textadept/modules/spellcheck)
+  install(CODE "file(MAKE_DIRECTORY ${module_dir})")
+  install(FILES init.lua en_US.aff en_US.dic spell.so DESTINATION ${module_dir})
+endif()
 
 # Documentation.
 get_filename_component(ta_dir ${src}/../../ ABSOLUTE)
