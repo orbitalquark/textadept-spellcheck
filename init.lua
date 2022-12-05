@@ -77,11 +77,7 @@ if not rawget(_L, 'Spelling') then
 end
 
 local lib = 'spellcheck.spell'
-if OSX then
-  lib = lib .. 'osx'
-elseif WIN32 and CURSES then
-  lib = lib .. '-curses'
-end
+if OSX then lib = lib .. 'osx' end
 M.spell = require(lib)
 
 ---
