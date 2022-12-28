@@ -31,7 +31,7 @@ Releases include binaries, so building this modules should not be necessary. If 
 to build manually, use CMake. For example:
 
     cmake -S . -B build_dir
-    cmake --build build_dir --target diff
+    cmake --build build_dir
     cmake --install build_dir
 
 ## Key Bindings
@@ -39,8 +39,8 @@ to build manually, use CMake. For example:
 Windows and Linux | macOS | Terminal | Command
 -|-|-|-
 **Tools**| | |
-F7 | F7 | F7 | Check spelling interactively
-Shift+F7 | ⇧F7 | S-F7 | Mark misspelled words
+Ctrl+: | ⌘: | M-: | Check spelling interactively
+Ctrl+; | ⌘; | M-; | Mark misspelled words
 
 
 ## Fields defined by `spellcheck`

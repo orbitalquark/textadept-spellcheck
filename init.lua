@@ -43,8 +43,8 @@ local M = {}
 -- Windows and Linux | macOS | Terminal | Command
 -- -|-|-|-
 -- **Tools**| | |
--- F7 | F7 | F7 | Check spelling interactively
--- Shift+F7 | ⇧F7 | S-F7 | Mark misspelled words
+-- Ctrl+: | ⌘: | M-: | Check spelling interactively
+-- Ctrl+; | ⌘; | M-; | Mark misspelled words
 --
 -- @field check_spelling_on_save (bool)
 --   Check spelling after saving files.
@@ -325,8 +325,9 @@ for i = 1, #m_tools - 1 do
     end
   end
 end
-keys.f7 = m_tools[_L['Spelling']][_L['Check Spelling...']][2]
-keys['shift+f7'] = M.check_spelling
+local mod = (WIN32 or LINUX) and 'ctrl' or OSX and 'cmd' or CURSES and 'meta'
+keys[mod .. '+:'] = m_tools[_L['Spelling']][_L['Check Spelling...']][2]
+keys[mod .. '+;'] = M.check_spelling
 
 return M
 
