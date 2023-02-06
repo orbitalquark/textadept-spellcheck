@@ -1,8 +1,5 @@
 -- Copyright 2015-2023 Mitchell. See LICENSE.
 
-local M = {}
-
---[[ This comment is for LuaDoc.
 ---
 -- Spell checking for Textadept.
 --
@@ -45,18 +42,19 @@ local M = {}
 -- **Tools**| | |
 -- Ctrl+: | ⌘: | M-: | Check spelling interactively
 -- Ctrl+; | ⌘; | M-; | Mark misspelled words
---
--- @field check_spelling_on_save (bool)
---   Check spelling after saving files.
---   The default value is `true`.
--- @field INDIC_SPELLING (number)
---   The spelling error indicator number.
--- @field spellchecker (userdata)
---   The Hunspell spellchecker object.
-module('spellcheck')]]
+-- @module spellcheck
+local M = {}
 
+---
+-- Check spelling after saving files.
+-- The default value is `true`.
 M.check_spelling_on_save = true
-M.INDIC_SPELLING = _SCINTILLA.next_indic_number()
+--- The spelling error indicator number.
+M.INDIC_SPELLING = _SCINTILLA.new_indic_number()
+
+---
+-- The Hunspell spellchecker object.
+-- @field spellchecker
 
 -- Localizations.
 local _L = _L
@@ -80,10 +78,7 @@ local lib = 'spellcheck.spell'
 if OSX then lib = lib .. 'osx' end
 M.spell = require(lib)
 
----
--- Paths to search for Hunspell dictionaries in.
--- @class table
--- @name hunspell_paths
+--- Paths to search for Hunspell dictionaries in.
 M.hunspell_paths = {
   _USERHOME .. '/modules/spellcheck/', '/usr/local/share/hunspell/', '/usr/share/hunspell/',
   'C:\\Program Files (x86)\\hunspell\\', 'C:\\Program Files\\hunspell\\',
@@ -95,11 +90,9 @@ M.hunspell_paths = {
 -- Text with either of these styles is eligible for spellchecking.
 -- The style name keys are assigned non-`nil` values. The default styles are `default`,
 -- `comment`, and `string`.
--- @class table
--- @name spellcheckable_styles
 M.spellcheckable_styles = {default = true, comment = true, string = true}
 
-local SPELLING_ID = _SCINTILLA.next_user_list_type()
+local SPELLING_ID = _SCINTILLA.new_user_list_type()
 local user_dicts = _USERHOME .. (not WIN32 and '/' or '\\') .. 'dictionaries'
 
 ---
@@ -107,7 +100,6 @@ local user_dicts = _USERHOME .. (not WIN32 and '/' or '\\') .. 'dictionaries'
 -- @param lang The hunspell language to load.
 -- @usage spellcheck.load('en_US')
 -- @see hunspell_paths
--- @name load
 function M.load(lang)
   local aff, dic = lang .. '.aff', lang .. '.dic'
   for _, path in ipairs(M.hunspell_paths) do
@@ -174,20 +166,18 @@ events.connect(events.USER_LIST_SELECTION, function(id, text, position)
   end
 end)
 
--- LuaFormatter off
 -- LPeg grammar that matches spellcheckable words.
 local word_patt = {
   lpeg.Cp() * lpeg.C(lpeg.V('word')) * lpeg.Cp() + lpeg.V('skip') * lpeg.V(1),
   word_char = lpeg.R('AZ', 'az', '09', '\127\255') + '_',
   word_part = lpeg.R('az', '\127\255')^1 * -lpeg.V('word_char') +
-    lpeg.R('AZ') * lpeg.R('az', '\127\255')^0 * -lpeg.V('word_char') +
-    lpeg.R('AZ', '\127\255')^1 * -lpeg.V('word_char'),
+    (lpeg.R('AZ') * lpeg.R('az', '\127\255')^0 * -lpeg.V('word_char')) +
+    (lpeg.R('AZ', '\127\255')^1 * -lpeg.V('word_char')),
   word = lpeg.V('word_part') * (lpeg.S("-'") * lpeg.V('word_part'))^-1 *
     -(lpeg.V('word_char') + lpeg.S("-'.") * lpeg.V('word_char')),
   skip = lpeg.V('word_char')^1 * (lpeg.S("-'.") * lpeg.V('word_char')^1)^0 +
     (1 - lpeg.V('word_char'))^1
 }
--- LuaFormatter on
 
 -- Returns a generator that acts like string.gmatch, but for LPeg patterns.
 -- @param pattern LPeg pattern.
@@ -207,7 +197,6 @@ end
 -- @param wrapped Utility flag indicating whether or not the spellchecker has wrapped for
 --   displaying useful statusbar information. This flag is used and set internally, and should
 --   not be set otherwise.
--- @name check_spelling
 function M.check_spelling(interactive, wrapped)
   -- Show suggestions for the misspelled word under the caret if necessary.
   if interactive and buffer:indicator_all_on_for(buffer.current_pos) & 1 << M.INDIC_SPELLING - 1 > 0 then
@@ -293,34 +282,33 @@ for i = 1, #m_tools - 1 do
   elseif found_area then
     local label = m_tools[i].title or m_tools[i][1]
     if 'Spelling' < label:gsub('^_', '') or m_tools[i][1] == '' then
-      -- LuaFormatter off
       table.insert(m_tools, i, {
-        title = _L['Spelling'],
+        title = _L['Spelling'], --
         {_L['Check Spelling...'], function() M.check_spelling(true) end},
-        {_L['Mark Misspelled Words'], M.check_spelling},
-        SEP,
-        {_L['Load Dictionary...'], function()
-          local dicts = {}
-          for _, path in ipairs(M.hunspell_paths) do
-            if not lfs.attributes(path, 'mode') then goto continue end
-            for name in lfs.dir(path) do
-              if not name:find('%.dic$') then goto continue end
-              dicts[#dicts + 1] = name:match('(.+)%.dic$')
+        {_L['Mark Misspelled Words'], M.check_spelling}, --
+        SEP, {
+          _L['Load Dictionary...'], function()
+            local dicts = {}
+            for _, path in ipairs(M.hunspell_paths) do
+              if not lfs.attributes(path, 'mode') then goto continue end
+              for name in lfs.dir(path) do
+                if not name:find('%.dic$') then goto continue end
+                dicts[#dicts + 1] = name:match('(.+)%.dic$')
+                ::continue::
+              end
               ::continue::
             end
-            ::continue::
+            local button
+            i = ui.dialogs.list{title = _L['Select Dictionary'], items = dicts}
+            if i then M.load(dicts[i]) end
           end
-          local button
-          i = ui.dialogs.list{title = _L['Select Dictionary'], items = dicts}
-          if i then M.load(dicts[i]) end
-        end},
-        SEP,
-        {_L['Open User Dictionary'], function()
-          if not lfs.attributes(user_dicts) then lfs.mkdir(user_dicts) end
-          io.open_file(user_dicts .. (not WIN32 and '/' or '\\') .. 'user.dic')
-        end}
+        }, SEP, {
+          _L['Open User Dictionary'], function()
+            if not lfs.attributes(user_dicts) then lfs.mkdir(user_dicts) end
+            io.open_file(user_dicts .. (not WIN32 and '/' or '\\') .. 'user.dic')
+          end
+        }
       })
-      -- LuaFormatter on
       break
     end
   end

@@ -1,4 +1,5 @@
 # Spellcheck
+---
 
 Spell checking for Textadept.
 
@@ -42,22 +43,21 @@ Windows and Linux | macOS | Terminal | Command
 Ctrl+: | ⌘: | M-: | Check spelling interactively
 Ctrl+; | ⌘; | M-; | Mark misspelled words
 
-
 ## Fields defined by `spellcheck`
 
 <a id="spellcheck.INDIC_SPELLING"></a>
-### `spellcheck.INDIC_SPELLING` (number)
+### `spellcheck.INDIC_SPELLING` 
 
 The spelling error indicator number.
 
 <a id="spellcheck.check_spelling_on_save"></a>
-### `spellcheck.check_spelling_on_save` (bool)
+### `spellcheck.check_spelling_on_save` 
 
 Check spelling after saving files.
-  The default value is `true`.
+The default value is `true`.
 
 <a id="spellcheck.spellchecker"></a>
-### `spellcheck.spellchecker` (userdata)
+### `spellcheck.spellchecker` 
 
 The Hunspell spellchecker object.
 
@@ -65,7 +65,7 @@ The Hunspell spellchecker object.
 ## Functions defined by `spellcheck`
 
 <a id="_G.spell"></a>
-### `_G.spell`(*aff, dic, key*)
+### `_G.spell`(*aff*, *dic*, *key*)
 
 Returns a Hunspell spellchecker that utilizes affix file path *aff* and dictionary file
 path *dic*.
@@ -73,36 +73,34 @@ This is a low-level function. You probably want to use the higher-level `spellch
 
 Parameters:
 
-* *`aff`*: Path to the Hunspell affix file to use.
-* *`dic`*: Path to the Hunspell dictionary file to use.
-* *`key`*: Optional string key for encrypted *dic*.
+- *aff*:  Path to the Hunspell affix file to use.
+- *dic*:  Path to the Hunspell dictionary file to use.
+- *key*:  Optional string key for encrypted *dic*.
 
 Usage:
 
-* `spellchecker = spell('/usr/share/hunspell/en_US.aff', '/usr/share/hunspell/en_US.dic')`
-* `spellchecker:spell('foo') --> false`
+- `spellchecker = spell('/usr/share/hunspell/en_US.aff', '/usr/share/hunspell/en_US.dic')
+`
+- `spellchecker:spell('foo') --> false
+`
 
 Return:
 
-* spellchecker
-
-See also:
-
-* [`spellcheck.load`](#spellcheck.load)
+- spellchecker
 
 <a id="spellcheck.check_spelling"></a>
-### `spellcheck.check_spelling`(*interactive, wrapped*)
+### `spellcheck.check_spelling`(*interactive*, *wrapped*)
 
 Checks the buffer for spelling errors, marks misspelled words, and optionally shows suggestions
 for the next misspelled word if *interactive* is `true`.
 
 Parameters:
 
-* *`interactive`*: Flag indicating whether or not to display suggestions for the next
-  misspelled word. The default value is `false`.
-* *`wrapped`*: Utility flag indicating whether or not the spellchecker has wrapped for
-  displaying useful statusbar information. This flag is used and set internally, and should
-  not be set otherwise.
+- *interactive*:  Flag indicating whether or not to display suggestions for the next
+   misspelled word. The default value is `false`.
+- *wrapped*:  Utility flag indicating whether or not the spellchecker has wrapped for
+   displaying useful statusbar information. This flag is used and set internally, and should
+   not be set otherwise.
 
 <a id="spellcheck.load"></a>
 ### `spellcheck.load`(*lang*)
@@ -111,26 +109,23 @@ Loads string language *lang* into the spellchecker.
 
 Parameters:
 
-* *`lang`*: The hunspell language to load.
+- *lang*:  The hunspell language to load.
 
 Usage:
 
-* `spellcheck.load('en_US')`
+- `spellcheck.load('en_US')
+`
 
-See also:
-
-* [`spellcheck.hunspell_paths`](#spellcheck.hunspell_paths)
-
-<a id="spellchecker:add_dic"></a>
+<a id="spellchecker.add_dic"></a>
 ### `spellchecker:add_dic`(*dic*)
 
 Adds words from dictionary file path *dic* to the spellchecker.
 
 Parameters:
 
-* *`dic`*: Path to the Hunspell dictionary file to load.
+- *dic*:  Path to the Hunspell dictionary file to load.
 
-<a id="spellchecker:add_word"></a>
+<a id="spellchecker.add_word"></a>
 ### `spellchecker:add_word`(*word*)
 
 Adds string *word* to the spellchecker.
@@ -139,31 +134,31 @@ and applies only to this spellchecker.
 
 Parameters:
 
-* *`word`*: The word to add.
+- *word*:  The word to add.
 
-<a id="spellchecker:get_dic_encoding"></a>
+<a id="spellchecker.get_dic_encoding"></a>
 ### `spellchecker:get_dic_encoding`()
 
 Returns the dictionary's encoding.
 
 Return:
 
-* string encoding
+- string encoding
 
-<a id="spellchecker:spell"></a>
+<a id="spellchecker.spell"></a>
 ### `spellchecker:spell`(*word*)
 
 Returns `true` if string *word* is spelled correctly; `false` otherwise.
 
 Parameters:
 
-* *`word`*: The word to check spelling of.
+- *word*:  The word to check spelling of.
 
 Return:
 
-* `true` or `false`
+- `true` or `false`
 
-<a id="spellchecker:suggest"></a>
+<a id="spellchecker.suggest"></a>
 ### `spellchecker:suggest`(*word*)
 
 Returns a list of spelling suggestions for string *word*.
@@ -171,11 +166,11 @@ If *word* is spelled correctly, the returned list will be empty.
 
 Parameters:
 
-* *`word`*: The word to get spelling suggestions for.
+- *word*:  The word to get spelling suggestions for.
 
 Return:
 
-* list of suggestions
+- list of suggestions
 
 
 ## Tables defined by `spellcheck`
@@ -185,6 +180,14 @@ Return:
 
 Paths to search for Hunspell dictionaries in.
 
+Fields:
+
+- `_USERHOME`: 
+- `/usr/local/share/hunspell/`: 
+- `/usr/share/hunspell/`: 
+- `C:\\Program Files (x86)\\hunspell\\', `: 
+- `_HOME`: 
+
 <a id="spellcheck.spellcheckable_styles"></a>
 ### `spellcheck.spellcheckable_styles`
 
@@ -192,5 +195,11 @@ Table of spellcheckable style names.
 Text with either of these styles is eligible for spellchecking.
 The style name keys are assigned non-`nil` values. The default styles are `default`,
 `comment`, and `string`.
+
+Fields:
+
+- `default`: 
+- `comment`: 
+- `string`: 
 
 ---
