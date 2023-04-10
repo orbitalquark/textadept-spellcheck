@@ -1,7 +1,6 @@
 -- Copyright 2015-2023 Mitchell. See LICENSE.
 
----
--- Spell checking for Textadept.
+--- Spell checking for Textadept.
 --
 -- Install this module by copying it into your *~/.textadept/modules/* directory or Textadept's
 -- *modules/* directory, and then putting the following in your *~/.textadept/init.lua*:
@@ -45,15 +44,13 @@
 -- @module spellcheck
 local M = {}
 
----
--- Check spelling after saving files.
+--- Check spelling after saving files.
 -- The default value is `true`.
 M.check_spelling_on_save = true
 --- The spelling error indicator number.
 M.INDIC_SPELLING = _SCINTILLA.new_indic_number()
 
----
--- The Hunspell spellchecker object.
+--- The Hunspell spellchecker object.
 -- @field spellchecker
 
 -- Localizations.
@@ -85,8 +82,7 @@ M.hunspell_paths = {
   _HOME .. '/modules/spellcheck/'
 }
 
----
--- Table of spellcheckable style names.
+--- Table of spellcheckable style names.
 -- Text with either of these styles is eligible for spellchecking.
 -- The style name keys are assigned non-`nil` values. The default styles are `default`,
 -- `comment`, and `string`.
@@ -95,8 +91,7 @@ M.spellcheckable_styles = {default = true, comment = true, string = true}
 local SPELLING_ID = _SCINTILLA.new_user_list_type()
 local user_dicts = _USERHOME .. (not WIN32 and '/' or '\\') .. 'dictionaries'
 
----
--- Loads string language *lang* into the spellchecker.
+--- Loads string language *lang* into the spellchecker.
 -- @param lang The hunspell language to load.
 -- @usage spellcheck.load('en_US')
 -- @see hunspell_paths
@@ -122,7 +117,7 @@ end
 M.load((os.getenv('LANG') or ''):match('^[^.@]+') or 'en_US')
 events.connect(events.RESET_BEFORE, function() M.spellchecker = nil end)
 
--- Shows suggestions for string *word* at the current position.
+--- Shows suggestions for string *word* at the current position.
 -- @param word The word to show suggestions for.
 local function show_suggestions(word)
   local encoding = M.spellchecker:get_dic_encoding()
@@ -179,7 +174,7 @@ local word_patt = {
     (1 - lpeg.V('word_char'))^1
 }
 
--- Returns a generator that acts like string.gmatch, but for LPeg patterns.
+--- Returns a generator that acts like string.gmatch, but for LPeg patterns.
 -- @param pattern LPeg pattern.
 -- @param subject String subject.
 local function lpeg_gmatch(pattern, subject)
@@ -189,9 +184,8 @@ local function lpeg_gmatch(pattern, subject)
   end, subject, 1
 end
 
----
--- Checks the buffer for spelling errors, marks misspelled words, and optionally shows suggestions
--- for the next misspelled word if *interactive* is `true`.
+--- Checks the buffer for spelling errors, marks misspelled words, and optionally shows
+-- suggestions for the next misspelled word if *interactive* is `true`.
 -- @param interactive Flag indicating whether or not to display suggestions for the next
 --   misspelled word. The default value is `false`.
 -- @param wrapped Utility flag indicating whether or not the spellchecker has wrapped for
@@ -319,10 +313,9 @@ keys[mod .. '+;'] = M.check_spelling
 
 return M
 
---[[ The functions below are Lua C functions.
+-- The functions below are Lua C functions.
 
----
--- Returns a Hunspell spellchecker that utilizes affix file path *aff* and dictionary file
+--- Returns a Hunspell spellchecker that utilizes affix file path *aff* and dictionary file
 -- path *dic*.
 -- This is a low-level function. You probably want to use the higher-level `spellcheck.load()`.
 -- @param aff Path to the Hunspell affix file to use.
@@ -332,35 +325,31 @@ return M
 -- @usage spellchecker = spell('/usr/share/hunspell/en_US.aff', '/usr/share/hunspell/en_US.dic')
 -- @usage spellchecker:spell('foo') --> false
 -- @see load
-function _G.spell(aff, dic, key) end
+-- @function _G.spell
 
----
--- Adds words from dictionary file path *dic* to the spellchecker.
+--- @type spellchecker
+
+--- Adds words from dictionary file path *dic* to the spellchecker.
 -- @param dic Path to the Hunspell dictionary file to load.
-function spellchecker:add_dic(dic) end
+-- @function add_dic
 
----
--- Returns `true` if string *word* is spelled correctly; `false` otherwise.
+--- Returns `true` if string *word* is spelled correctly; `false` otherwise.
 -- @param word The word to check spelling of.
 -- @return `true` or `false`
-function spellchecker:spell(word) end
+-- @function spell
 
----
--- Returns a list of spelling suggestions for string *word*.
+--- Returns a list of spelling suggestions for string *word*.
 -- If *word* is spelled correctly, the returned list will be empty.
 -- @param word The word to get spelling suggestions for.
 -- @return list of suggestions
-function spellchecker:suggest(word) end
+-- @function suggest
 
----
--- Returns the dictionary's encoding.
+--- Returns the dictionary's encoding.
 -- @return string encoding
-function spellchecker:get_dic_encoding() end
+-- @function get_dic_encoding
 
----
--- Adds string *word* to the spellchecker.
+--- Adds string *word* to the spellchecker.
 -- Note: this is not a permanent addition. It only persists for the life of this spellchecker
 -- and applies only to this spellchecker.
 -- @param word The word to add.
-function spellchecker:add_word(word) end
-]]
+-- @function add_word
