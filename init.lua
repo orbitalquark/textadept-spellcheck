@@ -9,15 +9,15 @@
 --
 -- There will be a "Tools > Spelling" menu. Textadept automatically spell checks the buffer
 -- each time it is saved, highlighting any misspelled words in plain text, comments, and
--- strings. These options can be configured via [`spellcheck.check_spelling_on_save`]() and
--- [`spellcheck.spellcheckable_styles`](), respectively. Left-clicking (not right-clicking)
--- on misspelled words shows suggestions.
+-- strings. These options can be configured via `spellcheck.check_spelling_on_save` and
+-- `spellcheck.spellcheckable_styles`, respectively. Left-clicking (not right-clicking) on
+-- misspelled words shows suggestions.
 --
--- By default, Textadept attempts to load a preexisting [Hunspell][] dictionary for
--- the detected locale. If none exists, or if the locale is not detected, Textadept
--- falls back on its own prepackaged US English dictionary. Textadept searches for
--- dictionaries in [`spellcheck.hunspell_paths`](). User dictionaries are located in the
--- *~/.textadept/dictionaries/* directory, and are loaded automatically.
+-- By default, Textadept attempts to load a preexisting [Hunspell][] dictionary for the
+-- detected locale. If none exists, or if the locale is not detected, Textadept falls back
+-- on its own prepackaged US English dictionary. Textadept searches for dictionaries in
+-- `spellcheck.hunspell_paths`. User dictionaries are located in the *~/.textadept/dictionaries/*
+-- directory, and are loaded automatically.
 --
 -- Dictionary files are Hunspell dictionaries and follow the Hunspell format: the first line
 -- in a dictionary file contains the number of entries contained within, and each subsequent
@@ -94,7 +94,6 @@ local user_dicts = _USERHOME .. (not WIN32 and '/' or '\\') .. 'dictionaries'
 --- Loads string language *lang* into the spellchecker.
 -- @param lang The hunspell language to load.
 -- @usage spellcheck.load('en_US')
--- @see hunspell_paths
 function M.load(lang)
   local aff, dic = lang .. '.aff', lang .. '.dic'
   for _, path in ipairs(M.hunspell_paths) do
@@ -324,7 +323,6 @@ return M
 -- @return spellchecker
 -- @usage spellchecker = spell('/usr/share/hunspell/en_US.aff', '/usr/share/hunspell/en_US.dic')
 -- @usage spellchecker:spell('foo') --> false
--- @see load
 -- @function _G.spell
 
 --- @type spellchecker
