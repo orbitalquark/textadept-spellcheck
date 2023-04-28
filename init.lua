@@ -266,7 +266,7 @@ end)
 
 -- Add menu entries and configure key bindings.
 -- (Insert 'Spelling' menu in alphabetical order.)
-local m_tools = textadept.menu.menubar[_L['Tools']]
+local m_tools = textadept.menu.menubar['Tools']
 local found_area
 local SEP = {''}
 for i = 1, #m_tools - 1 do
