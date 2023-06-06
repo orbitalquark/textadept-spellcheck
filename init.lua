@@ -5,7 +5,7 @@
 -- Install this module by copying it into your *~/.textadept/modules/* directory or Textadept's
 -- *modules/* directory, and then putting the following in your *~/.textadept/init.lua*:
 --
---     require('spellcheck')
+--	require('spellcheck')
 --
 -- There will be a "Tools > Spelling" menu. Textadept automatically spell checks the buffer
 -- each time it is saved, highlighting any misspelled words in plain text, comments, and
@@ -30,9 +30,9 @@
 -- Releases include binaries, so building this modules should not be necessary. If you want
 -- to build manually, use CMake. For example:
 --
---     cmake -S . -B build_dir
---     cmake --build build_dir
---     cmake --install build_dir
+--	cmake -S . -B build_dir
+--	cmake --build build_dir
+--	cmake --install build_dir
 --
 -- ### Key Bindings
 --
@@ -186,10 +186,10 @@ end
 --- Checks the buffer for spelling errors, marks misspelled words, and optionally shows
 -- suggestions for the next misspelled word if *interactive* is `true`.
 -- @param interactive Flag indicating whether or not to display suggestions for the next
---   misspelled word. The default value is `false`.
+--	misspelled word. The default value is `false`.
 -- @param wrapped Utility flag indicating whether or not the spellchecker has wrapped for
---   displaying useful statusbar information. This flag is used and set internally, and should
---   not be set otherwise.
+--	displaying useful statusbar information. This flag is used and set internally, and
+--	should not be set otherwise.
 function M.check_spelling(interactive, wrapped)
 	-- Show suggestions for the misspelled word under the caret if necessary.
 	if interactive and buffer:indicator_all_on_for(buffer.current_pos) & 1 << M.INDIC_SPELLING - 1 > 0 then
