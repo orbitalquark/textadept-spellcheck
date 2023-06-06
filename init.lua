@@ -125,10 +125,8 @@ local function show_suggestions(word)
 	if #suggestions == 0 then suggestions[1] = string.format('(%s)', _L['No Suggestions']) end
 	suggestions[#suggestions + 1] = string.format('(%s)', _L['Add'])
 	suggestions[#suggestions + 1] = string.format('(%s)', _L['Ignore'])
-	local separator = buffer.auto_c_separator
 	buffer.auto_c_separator = string.byte('\n')
 	buffer:user_list_show(SPELLING_ID, table.concat(suggestions, '\n'))
-	buffer.auto_c_separator = separator
 end
 -- Either correct the misspelled word, add it to the user's dictionary, or ignore it (based on
 -- the selected item).
