@@ -1,5 +1,4 @@
 # Spellcheck
----
 
 Spell checking for Textadept.
 
