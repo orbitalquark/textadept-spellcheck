@@ -49,6 +49,10 @@ local M = {}
 M.check_spelling_on_save = true
 --- The spelling error indicator number.
 M.INDIC_SPELLING = _SCINTILLA.new_indic_number()
+--- The name of the theme color used to mark misspelled words.
+-- The default value is 'red'. If your theme does not define that color, set this field to your
+-- theme's equivalent.
+M.misspelled_color_name = 'red'
 
 --- The Hunspell spellchecker object.
 -- @field spellchecker
@@ -259,7 +263,8 @@ end)
 -- Set up indicators, add a menu, and configure key bindings.
 events.connect(events.VIEW_NEW, function()
 	view.indic_style[M.INDIC_SPELLING] = not CURSES and view.INDIC_DIAGONAL or view.INDIC_STRAIGHTBOX
-	view.indic_fore[M.INDIC_SPELLING] = view.colors.red
+	local color = view.colors[M.misspelled_color_name]
+	if color then view.indic_fore[M.INDIC_SPELLING] = color end
 end)
 
 -- Add menu entries and configure key bindings.

@@ -1,4 +1,5 @@
 # Spellcheck
+---
 
 Spell checking for Textadept.
 
@@ -67,6 +68,13 @@ Fields:
 - `/usr/share/hunspell/`: 
 - `C:\\Program Files (x86)\\hunspell\\', `: 
 - `_HOME`: 
+
+<a id="spellcheck.misspelled_color_name"></a>
+### `spellcheck.misspelled_color_name` 
+
+The name of the theme color used to mark misspelled words.
+The default value is 'red'. If your theme does not define that color, set this field to your
+theme's equivalent.
 
 <a id="spellcheck.spellcheckable_styles"></a>
 ### `spellcheck.spellcheckable_styles` &lt;table&gt;
