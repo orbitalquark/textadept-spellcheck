@@ -48,7 +48,7 @@ local M = {}
 -- The default value is `true`.
 M.check_spelling_on_save = true
 --- The spelling error indicator number.
-M.INDIC_SPELLING = _SCINTILLA.new_indic_number()
+M.INDIC_SPELLING = view.new_indic_number()
 --- The name of the theme color used to mark misspelled words.
 -- The default value is 'red'. If your theme does not define that color, set this field to your
 -- theme's equivalent.
@@ -92,7 +92,7 @@ M.hunspell_paths = {
 -- `comment`, and `string`.
 M.spellcheckable_styles = {default = true, comment = true, string = true}
 
-local SPELLING_ID = _SCINTILLA.new_user_list_type()
+local SPELLING_ID = view.new_user_list_type()
 local user_dicts = _USERHOME .. (not WIN32 and '/' or '\\') .. 'dictionaries'
 
 --- Loads string language *lang* into the spellchecker.
