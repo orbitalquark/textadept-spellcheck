@@ -84,4 +84,5 @@ int luaopen_spell(lua_State *L) {
 // Platform-specific Lua library entry points.
 LUALIB_API int luaopen_spellcheck_spell(lua_State *L) { return luaopen_spell(L); }
 LUALIB_API int luaopen_spellcheck_spellosx(lua_State *L) { return luaopen_spell(L); }
+LUALIB_API int luaopen_spellcheck_spellarm(lua_State *L) { return luaopen_spell(L); }
 }

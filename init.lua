@@ -76,7 +76,11 @@ if not rawget(_L, 'Spelling') then
 end
 
 local lib = 'spellcheck.spell'
-if OSX then lib = lib .. 'osx' end
+if OSX then
+	lib = lib .. 'osx'
+elseif LINUX and io.popen('uname -m'):read() == 'aarch64' then
+	lib = lib .. 'arm'
+end
 M.spell = require(lib)
 
 --- Paths to search for Hunspell dictionaries in.
