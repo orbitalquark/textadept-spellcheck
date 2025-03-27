@@ -5,7 +5,9 @@ Spell checking for Textadept.
 Install this module by copying it into your *~/.textadept/modules/* directory or Textadept's
 *modules/* directory, and then putting the following in your *~/.textadept/init.lua*:
 
-	require('spellcheck')
+```lua
+local spellcheck = require('spellcheck')
+```
 
 There will be a "Tools > Spelling" menu. Textadept automatically spell checks the buffer
 each time it is saved, highlighting any misspelled words in plain text, comments, and
@@ -30,9 +32,11 @@ line contains a word.
 Releases include binaries, so building this modules should not be necessary. If you want
 to build manually, use CMake. For example:
 
-	cmake -S . -B build_dir
-	cmake --build build_dir
-	cmake --install build_dir
+```bash
+cmake -S . -B build_dir
+cmake --build build_dir
+cmake --install build_dir
+```
 
 ## Key Bindings
 
@@ -42,168 +46,136 @@ Windows and Linux | macOS | Terminal | Command
 Ctrl+: | ⌘: | M-: | Check spelling interactively
 Ctrl+; | ⌘; | M-; | Mark misspelled words
 
-## Fields defined by `spellcheck`
-
 <a id="spellcheck.INDIC_SPELLING"></a>
-### `spellcheck.INDIC_SPELLING` 
+## `spellcheck.INDIC_SPELLING`
 
 The spelling error indicator number.
 
+<a id="_G.spell"></a>
+## `_G.spell`(*aff*, *dic*[, *key*])
+
+Returns a Hunspell spellchecker.
+
+This is a low-level function. You probably want to use the higher-level [`spellcheck.load()`](#spellcheck.load).
+
+Parameters:
+- *aff*:  String path to the Hunspell affix file to use.
+- *dic*:  String path to the Hunspell dictionary file to use.
+- *key*:  String key for encrypted *dic*.
+
+Usage:
+
+```lua
+spellchecker = spell('/usr/share/hunspell/en_US.aff', '/usr/share/hunspell/en_US.dic')
+spellchecker:spell('foo') --> false
+```
+
+<a id="spellcheck.check_spelling"></a>
+## `spellcheck.check_spelling`([*interactive*=false[, *wrapped*]])
+
+Checks the buffer for any spelling errors and marks them.
+
+Parameters:
+- *interactive*:  Display suggestions for the next misspelled word.
+- *wrapped*:  Utility flag that indicates whether or not the spellchecker has
+	wrapped for displaying useful statusbar information. This flag is used and set internally,
+	and should not be set otherwise.
+
 <a id="spellcheck.check_spelling_on_save"></a>
-### `spellcheck.check_spelling_on_save` 
+## `spellcheck.check_spelling_on_save`
 
 Check spelling after saving files.
+
 The default value is `true`.
 
 <a id="spellcheck.hunspell_paths"></a>
-### `spellcheck.hunspell_paths` &lt;table&gt;
+## `spellcheck.hunspell_paths`
 
-Paths to search for Hunspell dictionaries in.
+List of paths to search for Hunspell dictionaries in.
 
-Fields:
+<a id="spellcheck.load"></a>
+## `spellcheck.load`(*lang*)
 
-- `_USERHOME`: 
-- `/usr/local/share/hunspell/`: 
-- `/usr/share/hunspell/`: 
-- `C:\\Program Files (x86)\\hunspell\\', `: 
-- `_HOME`: 
+Loads a language into the spellchecker.
+
+Parameters:
+- *lang*:  String Hunspell language name to load.
+
+Usage:
+
+```lua
+spellcheck.load('en_US')
+```
 
 <a id="spellcheck.misspelled_color_name"></a>
-### `spellcheck.misspelled_color_name` 
+## `spellcheck.misspelled_color_name`
 
 The name of the theme color used to mark misspelled words.
+
 The default value is 'red'. If your theme does not define that color, set this field to your
 theme's equivalent.
 
 <a id="spellcheck.spellcheckable_styles"></a>
-### `spellcheck.spellcheckable_styles` &lt;table&gt;
+## `spellcheck.spellcheckable_styles`
 
-Table of spellcheckable style names.
-Text with either of these styles is eligible for spellchecking.
-The style name keys are assigned non-`nil` values. The default styles are `default`,
-`comment`, and `string`.
+Map of spellcheckable style names to `true`.
 
-Fields:
+Text with any of these styles is eligible for spellchecking.
 
-- `default`: 
-- `comment`: 
-- `string`: 
+The default styles are `lexer.DEFAULT`, `lexer.COMMENT`, and `lexer.STRING`.
+
+Usage:
+
+```lua
+spellcheck.spellcheckable_styles[lexer.HEADING] = true
+```
 
 <a id="spellcheck.spellchecker"></a>
-### `spellcheck.spellchecker` 
+## `spellcheck.spellchecker`
 
 The Hunspell spellchecker object.
 
-
-## Functions defined by `spellcheck`
-
-<a id="_G.spell"></a>
-### `_G.spell`(*aff*, *dic*, *key*)
-
-Returns a Hunspell spellchecker that utilizes affix file path *aff* and dictionary file
-path *dic*.
-This is a low-level function. You probably want to use the higher-level [`spellcheck.load()`](#spellcheck.load).
-
-Parameters:
-
-- *aff*:  Path to the Hunspell affix file to use.
-- *dic*:  Path to the Hunspell dictionary file to use.
-- *key*:  Optional string key for encrypted *dic*.
-
-Usage:
-
-- `spellchecker = spell('/usr/share/hunspell/en_US.aff', '/usr/share/hunspell/en_US.dic')
-`
-- `spellchecker:spell('foo') --> false
-`
-
-Return:
-
-- spellchecker
-
-<a id="spellcheck.check_spelling"></a>
-### `spellcheck.check_spelling`(*interactive*, *wrapped*)
-
-Checks the buffer for spelling errors, marks misspelled words, and optionally shows
-suggestions for the next misspelled word if *interactive* is `true`.
-
-Parameters:
-
-- *interactive*:  Flag indicating whether or not to display suggestions for the next
-	misspelled word. The default value is `false`.
-- *wrapped*:  Utility flag indicating whether or not the spellchecker has wrapped for
-	displaying useful statusbar information. This flag is used and set internally, and
-	should not be set otherwise.
-
-<a id="spellcheck.load"></a>
-### `spellcheck.load`(*lang*)
-
-Loads string language *lang* into the spellchecker.
-
-Parameters:
-
-- *lang*:  The hunspell language to load.
-
-Usage:
-
-- `spellcheck.load('en_US')
-`
-
 <a id="spellchecker.add_dic"></a>
-### `spellchecker:add_dic`(*dic*)
+## `spellchecker:add_dic`(*dic*)
 
-Adds words from dictionary file path *dic* to the spellchecker.
+Adds words from a dictionary file to the spellchecker.
 
 Parameters:
-
-- *dic*:  Path to the Hunspell dictionary file to load.
+- *dic*:  String path to the Hunspell dictionary file to load.
 
 <a id="spellchecker.add_word"></a>
-### `spellchecker:add_word`(*word*)
+## `spellchecker:add_word`(*word*)
 
-Adds string *word* to the spellchecker.
+Adds a word to the spellchecker.
+
 Note: this is not a permanent addition. It only persists for the life of this spellchecker
 and applies only to this spellchecker.
 
 Parameters:
-
-- *word*:  The word to add.
+- *word*:  String word to add.
 
 <a id="spellchecker.get_dic_encoding"></a>
-### `spellchecker:get_dic_encoding`()
+## `spellchecker:get_dic_encoding`()
 
-Returns the dictionary's encoding.
-
-Return:
-
-- string encoding
+Returns the dictionary's string encoding.
 
 <a id="spellchecker.spell"></a>
-### `spellchecker:spell`(*word*)
+## `spellchecker:spell`(*word*)
 
-Returns `true` if string *word* is spelled correctly; `false` otherwise.
+Returns whether or not a word is spelled correctly.
 
 Parameters:
-
-- *word*:  The word to check spelling of.
-
-Return:
-
-- `true` or `false`
+- *word*:  String word to check spelling of.
 
 <a id="spellchecker.suggest"></a>
-### `spellchecker:suggest`(*word*)
+## `spellchecker:suggest`(*word*)
 
-Returns a list of spelling suggestions for string *word*.
-If *word* is spelled correctly, the returned list will be empty.
+Returns a list of spelling suggestions for a word.
+
+If that word is spelled correctly, the returned list will be empty.
 
 Parameters:
-
-- *word*:  The word to get spelling suggestions for.
-
-Return:
-
-- list of suggestions
+- *word*:  String word to get spelling suggestions for.
 
 
----
+
