@@ -315,9 +315,11 @@ for i = 1, #m_tools - 1 do
 		end
 	end
 end
-local mod = (WIN32 or LINUX) and 'ctrl' or OSX and 'cmd' or CURSES and 'meta'
-keys[mod .. '+:'] = m_tools[_L['Spelling']][_L['Check Spelling...']][2]
-keys[mod .. '+;'] = M.check_spelling
+
+keys.assign_platform_bindings{
+	[m_tools[_L['Spelling']][_L['Check Spelling...']][2]] = {'ctrl+:', 'cmd+:', 'meta+:'},
+	[M.check_spelling] = {'ctrl+;', 'cmd+;', 'meta+;'}
+}
 
 return M
 
