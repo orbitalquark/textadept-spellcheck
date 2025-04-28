@@ -13,7 +13,7 @@ set(src ${CMAKE_SOURCE_DIR})
 # Dependencies.
 include(FetchContent)
 set(FETCHCONTENT_QUIET OFF)
-set(hunspell_zip v1.7.0.zip)
+set(hunspell_zip v1.7.2.zip)
 FetchContent_Declare(hunspell URL https://github.com/hunspell/hunspell/archive/${hunspell_zip})
 FetchContent_MakeAvailable(hunspell)
 if(NOT EXISTS ${src}/en_US.aff)
