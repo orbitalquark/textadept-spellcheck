@@ -107,22 +107,18 @@ local user_dicts = _USERHOME .. (not WIN32 and '/' or '\\') .. 'dictionaries'
 -- @param lang String Hunspell language name to load.
 -- @usage spellcheck.load('en_US')
 function M.load(lang)
-	local aff, dic = lang .. '.aff', lang .. '.dic'
 	for _, path in ipairs(M.hunspell_paths) do
-		local aff_path, dic_path = path .. aff, path .. dic
+		local aff_path, dic_path = path .. lang .. '.aff', path .. lang .. '.dic'
 		if lfs.attributes(aff_path) and lfs.attributes(dic_path) then
 			M.spellchecker = M.spell(aff_path, dic_path)
-			goto lang_found
+			break
 		end
 	end
-	error(_L['Language not found'] .. ': ' .. lang)
-	::lang_found::
-	if lfs.attributes(user_dicts) then
-		for dic in lfs.dir(user_dicts) do
-			if dic:find('^%.%.?$') then goto continue end
-			M.spellchecker:add_dic(user_dicts .. (not WIN32 and '/' or '\\') .. dic)
-			::continue::
-		end
+	if not M.spellchecker then error(_L['Language not found'] .. ': ' .. lang) end
+	if not lfs.attributes(user_dicts) then return end
+	local sep = not WIN32 and '/' or '\\'
+	for dic in lfs.dir(user_dicts) do
+		if not dic:find('^%.%.?$') then M.spellchecker:add_dic(user_dicts .. sep .. dic) end
 	end
 end
 M.load((os.getenv('LANG') or ''):match('^[^.@]+') or 'en_US')
@@ -157,13 +153,13 @@ events.connect(events.USER_LIST_SELECTION, function(id, text, position)
 		if text:find(_L['Add']) then
 			if not lfs.attributes(user_dicts) then lfs.mkdir(user_dicts) end
 			local user_dict = user_dicts .. '/user.dic'
-			local words = {}
+			local user_words = {}
 			if lfs.attributes(user_dict) then
-				for word in io.lines(user_dict) do words[#words + 1] = word end
+				for user_word in io.lines(user_dict) do user_words[#user_words + 1] = user_word end
 			end
-			words[1] = #words + 1
-			words[#words + 1] = word
-			io.open(user_dict, 'wb'):write(table.concat(words, '\n')):close()
+			user_words[1] = #user_words + 1
+			user_words[#user_words + 1] = word
+			io.open(user_dict, 'wb'):write(table.concat(user_words, '\n')):close()
 		end
 		M.spellchecker:add_word(word:iconv(M.spellchecker:get_dic_encoding(), 'UTF-8'))
 		M.check_spelling() -- clear highlighting for all occurrences
@@ -187,8 +183,8 @@ local word_patt = {
 -- @param pattern LPeg pattern.
 -- @param subject String subject.
 local function lpeg_gmatch(pattern, subject)
-	return function(subject, i)
-		local s, word, e = lpeg.match(pattern, subject, i)
+	return function(subject_, i)
+		local s, word, e = lpeg.match(pattern, subject_, i)
 		if word then return e, s, word end
 	end, subject, 1
 end
@@ -300,9 +296,8 @@ for i = 1, #m_tools - 1 do
 							end
 							::continue::
 						end
-						local button
-						i = ui.dialogs.list{title = _L['Select Dictionary'], items = dicts}
-						if i then M.load(dicts[i]) end
+						local j = ui.dialogs.list{title = _L['Select Dictionary'], items = dicts}
+						if j then M.load(dicts[j]) end
 					end
 				}, SEP, {
 					_L['Open User Dictionary'], function()
