@@ -115,9 +115,11 @@ end)
 
 test('spellcheck should load user dictionaries', function()
 	local misspelled = 'ignoreother'
-	io.open(_USERHOME .. '/dictionaries/other.dic', 'wb'):write('1\n' .. misspelled)
+	io.open(_USERHOME .. '/other.aff', 'wb'):write('\n'):close()
+	io.open(_USERHOME .. '/other.dic', 'wb'):write('1\n' .. misspelled):close()
 	local _<close> = test.tmpfile(misspelled, true)
 
+	local _<close> = test.mock(spellcheck, 'hunspell_paths', {_USERHOME})
 	local select_first_item = test.stub(1)
 	local _<close> = test.mock(ui.dialogs, 'list', select_first_item)
 
@@ -128,7 +130,6 @@ test('spellcheck should load user dictionaries', function()
 	local misspelled_words = test.get_indicated_text(spellcheck.INDIC_SPELLING)
 	test.assert_equal(misspelled_words, {})
 end)
-expected_failure() -- TODO:
 
 test('spellcheck should allow opening the user dictionary', function()
 	textadept.menu.menubar['Tools/Spelling/Open User Dictionary'][2]()

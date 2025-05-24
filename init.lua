@@ -88,9 +88,10 @@ M.spell = require(lib)
 
 --- List of paths to search for Hunspell dictionaries in.
 M.hunspell_paths = {
-	_USERHOME .. '/modules/spellcheck/', '/usr/local/share/hunspell/', '/usr/share/hunspell/',
-	'C:\\Program Files (x86)\\hunspell\\', 'C:\\Program Files\\hunspell\\',
-	_HOME .. '/modules/spellcheck/'
+	_USERHOME .. '/modules/spellcheck', --
+	'/usr/local/share/hunspell', '/usr/share/hunspell', --
+	'C:\\Program Files (x86)\\hunspell', 'C:\\Program Files\\hunspell', --
+	_HOME .. '/modules/spellcheck'
 }
 
 --- Map of spellcheckable style names to `true`.
@@ -108,7 +109,8 @@ local user_dicts = _USERHOME .. (not WIN32 and '/' or '\\') .. 'dictionaries'
 -- @usage spellcheck.load('en_US')
 function M.load(lang)
 	for _, path in ipairs(M.hunspell_paths) do
-		local aff_path, dic_path = path .. lang .. '.aff', path .. lang .. '.dic'
+		local aff_path = string.format('%s/%s.aff', path, lang)
+		local dic_path = string.format('%s/%s.dic', path, lang)
 		if lfs.attributes(aff_path) and lfs.attributes(dic_path) then
 			M.spellchecker = M.spell(aff_path, dic_path)
 			break
@@ -296,6 +298,7 @@ for i = 1, #m_tools - 1 do
 							end
 							::continue::
 						end
+						table.sort(dicts)
 						local j = ui.dialogs.list{title = _L['Select Dictionary'], items = dicts}
 						if j then M.load(dicts[j]) end
 					end
