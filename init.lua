@@ -60,24 +60,6 @@ M.misspelled_color_name = 'red'
 --- The Hunspell spellchecker object.
 -- @field spellchecker
 
--- Localizations.
-local _L = _L
-if not rawget(_L, 'Spelling') then
-	-- Menu.
-	_L['Spelling'] = 'Spell_ing'
-	_L['Check Spelling...'] = '_Check Spelling...'
-	_L['Mark Misspelled Words'] = '_Mark Misspelled Words'
-	_L['Load Dictionary...'] = '_Load Dictionary...'
-	_L['Select Dictionary'] = 'Select Dictionary'
-	_L['Open User Dictionary'] = '_Open User Dictionary'
-	-- Other.
-	_L['Language not found'] = 'Language not found'
-	_L['No Suggestions'] = 'No Suggestions'
-	_L['Add'] = 'Add'
-	_L['Ignore'] = 'Ignore'
-	_L['No misspelled words.'] = 'No misspelled words.'
-end
-
 local lib = 'spellcheck.spell'
 if OSX then
 	lib = lib .. 'osx'
@@ -273,6 +255,12 @@ end)
 
 -- Add menu entries and configure key bindings.
 -- (Insert 'Spelling' menu in alphabetical order.)
+_L['Spelling'] = 'Spell_ing'
+_L['Check Spelling...'] = '_Check Spelling...'
+_L['Mark Misspelled Words'] = '_Mark Misspelled Words'
+_L['Load Dictionary...'] = '_Load Dictionary...'
+_L['Select Dictionary'] = '_Select Dictionary'
+_L['Open User Dictionary'] = '_Open User Dictionary'
 local m_tools = textadept.menu.menubar['Tools']
 local found_area
 local SEP = {''}
