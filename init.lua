@@ -173,6 +173,13 @@ local function lpeg_gmatch(pattern, subject)
 	end, subject, 1
 end
 
+
+--- Clears any spelling markers in the buffer
+function M.clear_spelling_markers()
+	buffer.indicator_current = M.INDIC_SPELLING
+	if not interactive then buffer:indicator_clear_range(1, buffer.length) end
+end
+
 --- Checks the buffer for any spelling errors and marks them.
 -- @param[opt=false] interactive Display suggestions for the next misspelled word.
 -- @param[optchain] wrapped Utility flag that indicates whether or not the spellchecker has
@@ -187,8 +194,7 @@ function M.check_spelling(interactive, wrapped)
 		return
 	end
 	-- Clear existing spellcheck indicators.
-	buffer.indicator_current = M.INDIC_SPELLING
-	if not interactive then buffer:indicator_clear_range(1, buffer.length) end
+	M.clear_spelling_markers()
 	-- Iterate over spellcheckable text ranges, checking words in them, and marking misspellings.
 	local spellcheckable_styles = {} -- cache
 	local buffer, style_at = buffer, buffer.style_at
@@ -257,6 +263,7 @@ end)
 -- (Insert 'Spelling' menu in alphabetical order.)
 _L['Spelling'] = 'Spell_ing'
 _L['Check Spelling...'] = '_Check Spelling...'
+_L['Clear Spelling Markers'] = 'Clear Spelling Mar_kers'
 _L['Mark Misspelled Words'] = '_Mark Misspelled Words'
 _L['Load Dictionary...'] = '_Load Dictionary...'
 _L['Select Dictionary'] = '_Select Dictionary'
@@ -273,6 +280,7 @@ for i = 1, #m_tools - 1 do
 			table.insert(m_tools, i, {
 				title = _L['Spelling'], --
 				{_L['Check Spelling...'], function() M.check_spelling(true) end},
+				{_L['Clear Spelling Markers'], M.clear_spelling_markers},
 				{_L['Mark Misspelled Words'], M.check_spelling}, --
 				SEP, {
 					_L['Load Dictionary...'], function()
