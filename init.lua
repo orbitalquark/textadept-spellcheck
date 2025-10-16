@@ -173,7 +173,6 @@ local function lpeg_gmatch(pattern, subject)
 	end, subject, 1
 end
 
-
 --- Clears any spelling markers in the buffer
 function M.clear_spelling_markers()
 	buffer.indicator_current = M.INDIC_SPELLING
