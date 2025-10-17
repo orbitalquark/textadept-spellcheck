@@ -258,6 +258,7 @@ end)
 _L['Spelling'] = 'Spell_ing'
 _L['Check Spelling...'] = '_Check Spelling...'
 _L['Mark Misspelled Words'] = '_Mark Misspelled Words'
+_L['Unmark Misspelled Words'] = '_Unmark Misspelled Words'
 _L['Load Dictionary...'] = '_Load Dictionary...'
 _L['Select Dictionary'] = '_Select Dictionary'
 _L['Open User Dictionary'] = '_Open User Dictionary'
@@ -273,8 +274,12 @@ for i = 1, #m_tools - 1 do
 			table.insert(m_tools, i, {
 				title = _L['Spelling'], --
 				{_L['Check Spelling...'], function() M.check_spelling(true) end},
-				{_L['Mark Misspelled Words'], M.check_spelling}, --
-				SEP, {
+				{_L['Mark Misspelled Words'], M.check_spelling}, {
+					_L['Unmark Misspelled Words'], function()
+						buffer.indicator_current = M.INDIC_SPELLING
+						buffer:indicator_clear_range(1, buffer.length)
+					end
+				}, SEP, {
 					_L['Load Dictionary...'], function()
 						local dicts = {}
 						for _, path in ipairs(M.hunspell_paths) do
