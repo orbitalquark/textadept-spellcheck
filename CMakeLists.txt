@@ -17,13 +17,15 @@ set(hunspell_zip v1.7.2.zip)
 FetchContent_Declare(hunspell URL https://github.com/hunspell/hunspell/archive/${hunspell_zip})
 FetchContent_MakeAvailable(hunspell)
 if(NOT EXISTS ${src}/en_US.aff)
-	file(DOWNLOAD https://cgit.freedesktop.org/libreoffice/dictionaries/plain/en/en_US.aff
-			${src}/en_US.aff
+	file(DOWNLOAD
+		https://raw.githubusercontent.com/LibreOffice/dictionaries/refs/heads/master/en/en_US.aff
+		${src}/en_US.aff
 		SHOW_PROGRESS)
 endif()
 if(NOT EXISTS ${src}/en_US.dic)
-	file(DOWNLOAD https://cgit.freedesktop.org/libreoffice/dictionaries/plain/en/en_US.dic
-			${src}/en_US.dic
+	file(DOWNLOAD
+		https://raw.githubusercontent.com/LibreOffice/dictionaries/refs/heads/master/en/en_US.dic
+		${src}/en_US.dic
 		SHOW_PROGRESS)
 endif()
 set(lua_tgz lua-5.5.0-rc1.tar.gz)
