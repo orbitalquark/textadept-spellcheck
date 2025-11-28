@@ -106,8 +106,6 @@ end)
 -- Coverage tests.
 
 test('spellcheck.check_spelling(true) should indicate if there are no misspellings', function()
-	local _<close> = test.disable_metafield(ui, 'statusbar_text')
-
 	spellcheck.check_spelling(true)
 
 	test.assert_equal(ui.statusbar_text, _L['No misspelled words.'])
