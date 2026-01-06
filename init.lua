@@ -1,4 +1,4 @@
--- Copyright 2015-2025 Mitchell. See LICENSE.
+-- Copyright 2015-2026 Mitchell. See LICENSE.
 
 --- Spell checking for Textadept.
 -- Install this module by copying it into your *~/.textadept/modules/* directory or Textadept's
