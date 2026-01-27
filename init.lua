@@ -105,7 +105,9 @@ function M.load(lang)
 		if not dic:find('^%.%.?$') then M.spellchecker:add_dic(user_dicts .. sep .. dic) end
 	end
 end
-M.load((os.getenv('LANG') or ''):match('^[^.@]+') or 'en_US')
+local lang = os.getenv('LANG') or ''
+if lang == 'C' then lang = '' end -- not valid for spellchecking
+M.load(lang:match('^[^.@]+') or 'en_US')
 events.connect(events.RESET_BEFORE, function() M.spellchecker = nil end)
 
 --- Shows suggestions for a word.
