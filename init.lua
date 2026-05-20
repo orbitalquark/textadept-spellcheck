@@ -61,9 +61,9 @@ M.misspelled_color_name = 'red'
 -- @field spellchecker
 
 local lib = 'spellcheck.spell'
-if OSX then
+if OS == 'macos' then
 	lib = lib .. 'osx'
-elseif LINUX and io.popen('uname -m'):read() == 'aarch64' then
+elseif OS == 'linux' and io.popen('uname -m'):read() == 'aarch64' then
 	lib = lib .. 'arm'
 end
 M.spell = require(lib)
@@ -84,7 +84,7 @@ M.hunspell_paths = {
 M.spellcheckable_styles = {[lexer.DEFAULT] = true, [lexer.COMMENT] = true, [lexer.STRING] = true}
 
 local SPELLING_ID = view.new_user_list_type()
-local user_dicts = _USERHOME .. (not WIN32 and '/' or '\\') .. 'dictionaries'
+local user_dicts = _USERHOME .. (OS ~= 'windows' and '/' or '\\') .. 'dictionaries'
 
 --- Loads a language into the spellchecker.
 -- @param lang String Hunspell language name to load.
@@ -100,7 +100,7 @@ function M.load(lang)
 	end
 	if not M.spellchecker then error(_L['Language not found'] .. ': ' .. lang) end
 	if not lfs.attributes(user_dicts) then return end
-	local sep = not WIN32 and '/' or '\\'
+	local sep = OS ~= 'windows' and '/' or '\\'
 	for dic in lfs.dir(user_dicts) do
 		if not dic:find('^%.%.?$') then M.spellchecker:add_dic(user_dicts .. sep .. dic) end
 	end
@@ -250,7 +250,8 @@ end)
 
 -- Set up indicators, add a menu, and configure key bindings.
 events.connect(events.VIEW_NEW, function()
-	view.indic_style[M.INDIC_SPELLING] = not CURSES and view.INDIC_DIAGONAL or view.INDIC_STRAIGHTBOX
+	view.indic_style[M.INDIC_SPELLING] = UI ~= 'terminal' and view.INDIC_DIAGONAL or
+		view.INDIC_SQUIGGLELOW
 	local color = view.colors[M.misspelled_color_name]
 	if color then view.indic_fore[M.INDIC_SPELLING] = color end
 end)
@@ -300,7 +301,7 @@ for i = 1, #m_tools - 1 do
 				}, SEP, {
 					_L['Open User Dictionary'], function()
 						if not lfs.attributes(user_dicts) then lfs.mkdir(user_dicts) end
-						io.open_file(user_dicts .. (not WIN32 and '/' or '\\') .. 'user.dic')
+						io.open_file(user_dicts .. (OS ~= 'windows' and '/' or '\\') .. 'user.dic')
 					end
 				}
 			})
